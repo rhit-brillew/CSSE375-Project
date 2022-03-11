@@ -1,0 +1,82 @@
+<data>
+	<edge t1="Alaska" t2="Northwest Territory" />
+	<edge t1="Alaska" t2="Alberta" />
+	<edge t1="Northwest Territory" t2="Greenland" />
+	<edge t1="Greenland" t2="Ontario" />
+	<edge t1="Greenland" t2="Eastern Canada" />
+	<edge t1="Greenland" t2="Iceland" />
+	<edge t1="Alberta" t2="Northwest Territory" />
+	<edge t1="Alberta" t2="Ontario" />
+	<edge t1="Alberta" t2="Western United States" />
+	<edge t1="Ontario" t2="Western United States" />
+	<edge t1="Ontario" t2="Eastern United States" />
+	<edge t1="Ontario" t2="Eastern Canada" />
+	<edge t1="Ontario" t2="Northwest Territory" />
+	<edge t1="Eastern Canada" t2="Eastern United States" />
+	<edge t1="Western United States" t2="Eastern United States" />
+	<edge t1="Western United States" t2="Central America" />
+	<edge t1="Eastern United States" t2="Central America" />
+	<edge t1="Central America" t2="Venezuela" />
+	<edge t1="Venezuela" t2="Peru" />
+	<edge t1="Venezuela" t2="Brazil" />
+	<edge t1="Peru" t2="Brazil" />
+	<edge t1="Peru" t2="Argentina" />
+	<edge t1="Brazil" t2="North Africa" />
+	<edge t1="Brazil" t2="Argentina" />
+	<edge t1="Iceland" t2="Scandinavia" />
+	<edge t1="Iceland" t2="Great Britain" />
+	<edge t1="Iceland" t2="Northern Europe" />
+	<edge t1="Scandinavia" t2="Russia" />
+	<edge t1="Russia" t2="Ural" />
+	<edge t1="Russia" t2="Afghanistan" />
+	<edge t1="Russia" t2="Middle East" />
+	<edge t1="Great Britain" t2="Scandinavia" />
+	<edge t1="Great Britain" t2="Northern Europe" />
+	<edge t1="Great Britain" t2="Western Europe" />
+	<edge t1="Western Europe" t2="Northern Europe" />
+	<edge t1="Western Europe" t2="Southern Europe" />
+	<edge t1="Western Europe" t2="North Africa" />
+	<edge t1="Northern Europe" t2="Russia" />
+	<edge t1="Northern Europe" t2="Southern Europe" />
+	<edge t1="Northern Europe" t2="Scandinavia" />
+	<edge t1="Southern Europe" t2="Russia" />
+	<edge t1="Southern Europe" t2="North Africa" />
+	<edge t1="Southern Europe" t2="Egypt" />
+	<edge t1="Southern Europe" t2="Middle East" />
+	<edge t1="North Africa" t2="Egypt" />
+	<edge t1="North Africa" t2="East Africa" />
+	<edge t1="North Africa" t2="Central Africa" />
+	<edge t1="Egypt" t2="Middle East" />
+	<edge t1="Egypt" t2="East Africa" />
+	<edge t1="East Africa" t2="Middle East" />
+	<edge t1="East Africa" t2="Madagascar" />
+	<edge t1="Central Africa" t2="East Africa" />
+	<edge t1="Central Africa" t2="South Africa" />
+	<edge t1="Ural" t2="Siberia" />
+	<edge t1="Ural" t2="Afghanistan" />
+	<edge t1="Ural" t2="China" />
+	<edge t1="Siberia" t2="Yakutsk" />
+	<edge t1="Siberia" t2="Irkutsk" />
+	<edge t1="Siberia" t2="China" />
+	<edge t1="Siberia" t2="Mongolia" />
+	<edge t1="Yakutsk" t2="Kamchatka" />
+	<edge t1="Yakutsk" t2="Irkutsk" />
+	<edge t1="Kamchatka" t2="Alaska" />
+	<edge t1="Kamchatka" t2="Japan" />
+	<edge t1="Irkutsk" t2="Kamchatka" />
+	<edge t1="Irkutsk" t2="Mongolia" />
+	<edge t1="Afghanistan" t2="China" />
+	<edge t1="Afghanistan" t2="Middle East" />
+	<edge t1="Afghanistan" t2="India" />
+	<edge t1="China" t2="Mongolia" />
+	<edge t1="China" t2="Southeast Asia" />
+	<edge t1="Mongolia" t2="Japan" />
+	<edge t1="Middle East" t2="India" />
+	<edge t1="India" t2="China" />
+	<edge t1="India" t2="Southeast Asia" />
+	<edge t1="Southeast Asia" t2="Indonesia" />
+	<edge t1="Indonesia" t2="New Guinea" />
+	<edge t1="Indonesia" t2="Western Australia" />
+	<edge t1="New Guinea" t2="Eastern Australia" />
+	<edge t1="Western Australia" t2="Eastern Australia" />
+</data>

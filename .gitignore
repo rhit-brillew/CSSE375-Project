@@ -1,0 +1,76 @@
+# Covers JetBrains IDE: IntelliJ
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+*.iml
+
+## Directory-based project format:
+.idea/
+
+# CMake
+cmake-build-*/
+
+# File-based project format
+*.ipr
+*.iws
+
+# IntelliJ
+/out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Covers Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.classpath
+.project
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# Java annotation processor (APT)
+.factorypath
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/
+
+# Annotation Processing
+.apt_generated/
+.apt_generated_test/
+
+# Gradle
+# ------
+.gradle
+/build
+/*/build
+/*/*/build
+/*/*/*/build
+/*/*/*/*/build
+/*/docs/src/samples/**/build
+/*/docs/src/snippets/**/build
+/*/internal-android-performance-testing/build-android-libs
+test-splits/

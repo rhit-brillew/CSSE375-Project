@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Class name="risk.controller.InitializationController"/>
+    </Match>
+
+    <Match>
+        <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+    </Match>
+</FindBugsFilter>
