@@ -82,6 +82,16 @@ public class TerritoryMapController {
 		throw new IllegalArgumentException("Territory name must be a valid string");
 	}
 
+	public void setTerritoryOwnerByName(String name, Color color){
+		TerritoryModel territory = getTerritoryByName(name);
+		territory.setOwner(color);
+	}
+
+	public void changeTerritoryArmyAmountBy(String name, int amount){
+		TerritoryModel territory = getTerritoryByName(name);
+		territory.changeArmyAmountBy(amount);
+	}
+
 	public boolean areThereUnclaimedTerritories() {
 		for(TerritoryModel territory : allTerritories) {
 			if(!territory.isOwned()) {

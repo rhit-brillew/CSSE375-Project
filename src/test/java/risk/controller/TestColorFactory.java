@@ -31,49 +31,40 @@ public class TestColorFactory {
 
 	@Test
 	public void testIncludedColorLowercase() {
-		Color red = Color.RED;
-		assertEquals(red, ColorFactory.createColor("player1"));
+		assertEquals(Color.RED, ColorFactory.createColor("player1"));
 	}
 
 	@Test
 	public void testIncludedColorUppercase() {
-		Color red = Color.RED;
-		assertEquals(red, ColorFactory.createColor("Player1"));
+		assertEquals(Color.RED, ColorFactory.createColor("Player1"));
 	}
 
 	@Test
 	public void testIncludedColorFullCaps() {
-		Color red = Color.RED;
-		assertEquals(red, ColorFactory.createColor("PLAYER1"));
+		assertEquals(Color.RED, ColorFactory.createColor("PLAYER1"));
 	}
 
 	@Test
 	public void testIncludedColorLowercaseSpace() {
-		Color red = Color.RED;
-		assertEquals(red, ColorFactory.createColor("player 1"));
+		assertEquals(Color.RED, ColorFactory.createColor("player 1"));
 	}
 
 	@Test
 	public void testIncludedColorUppercaseSpace() {
-		Color red = Color.RED;
-		assertEquals(red, ColorFactory.createColor("Player 1"));
+		assertEquals(Color.RED, ColorFactory.createColor("Player 1"));
 	}
 
 	@Test
 	public void testIncludedColorFullCapsSpace() {
-		Color red = Color.RED;
-		assertEquals(red, ColorFactory.createColor("PLAYER 1"));
+		assertEquals(Color.RED, ColorFactory.createColor("PLAYER 1"));
 	}
 
 	@Test
 	public void testAllIncludedColors() {
-		Color red = Color.RED;
-		assertEquals(red, ColorFactory.createColor("player1"));
+		assertEquals(Color.RED, ColorFactory.createColor("player1"));
 		assertEquals(new Color(0, 150, 0), ColorFactory.createColor("player2"));
-		Color blue = Color.BLUE;
-		assertEquals(blue, ColorFactory.createColor("player3"));
-		Color magenta = Color.MAGENTA;
-		assertEquals(magenta, ColorFactory.createColor("player4"));
+		assertEquals(Color.BLUE, ColorFactory.createColor("player3"));
+		assertEquals(Color.MAGENTA, ColorFactory.createColor("player4"));
 		assertEquals(new Color(0, 150, 150), ColorFactory.createColor("player5"));
 	}
 }

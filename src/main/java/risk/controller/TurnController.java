@@ -95,7 +95,7 @@ public class TurnController implements GameViewObserver {
 		for(int i = 0; i < defenderRolls.size(); i++){
 			if(attackerRolls.get(i) > defenderRolls.get(i)){
 				if(territories.getTerritoryByName(currentDefender).getNumberOfArmies() == 1){
-					captureTerritory(currentDefender);
+					captureTerritory();
 					return;
 				} else {
 					territories.getTerritoryByName(currentDefender).changeArmyAmountBy(-1);
@@ -107,7 +107,7 @@ public class TurnController implements GameViewObserver {
 		updateBattleResults();
 	}
 
-	private void captureTerritory(String territoryName){
+	private void captureTerritory(){
 		Color playerColor = playerModels.get(currentPlayer).getColor();
 		territories.getTerritoryByName(currentDefender)
 			.changeArmyAmountBy(-territories.getTerritoryByName(currentDefender).getNumberOfArmies());
@@ -155,7 +155,6 @@ public class TurnController implements GameViewObserver {
 	}
 
 	public void territoryPressed(String territoryName, boolean placingTroop) {
-		gameView.updateGlobalGameState(currentPlayer, gamePhase.toString()); //todo
 		if(gamePhase == GamePhase.PLACING) {
 			placingPhase(territoryName);
 		} else if(gamePhase == GamePhase.TRADING) {
@@ -226,7 +225,6 @@ public class TurnController implements GameViewObserver {
 	}
 
 	private void attackingPhase(String territoryName) {
-		gameView.updateGlobalGameState(currentPlayer, gamePhase.toString()); //todo
 		if(currentAttacker != null) {
 			if(currentDefender!=null) {
 				gameView.updateErrorLabel(messages.getString("battleInProgress"));

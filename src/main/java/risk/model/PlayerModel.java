@@ -51,6 +51,10 @@ public class PlayerModel {
 	public Card getCardAtIndex(int index) {
 		return cards.get(index);
 	}
+
+	public String getTerritoryNameFromCardAtIndex(int index){
+		return cards.get(index).getTerritoryName();
+	}
 	
 	public void removeCard(Card cardToRemove) {
 		this.cards.remove(cardToRemove);

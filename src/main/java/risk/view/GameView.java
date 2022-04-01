@@ -83,10 +83,6 @@ public class GameView extends GameViewObservable {
 	public int getNumberOfPlayers() {
 		return numberOfPlayers;
 	}
-
-	public ResourceBundle getResourceBundle() {
-		return messages;
-	}
 	
 	private void initializeFrame() {
 		frame = new JFrame();
@@ -379,10 +375,6 @@ public class GameView extends GameViewObservable {
 	public void updateStateToDefenderRoll() {
 		gameState.setText(messages.getString("defenderRollPrompt"));
 	}
-
-	public void updateStateNonAdjacentMove(){
-		errorLabel.setText(messages.getString("adjacentTerritoryWarning"));
-	}
 	
 	public void updateErrorLabel(String message) {
 		errorLabel.setText(message);
@@ -448,10 +440,6 @@ public class GameView extends GameViewObservable {
 			}
 		});
 		gameBarPanel.add(submit);
-	}
-
-	public void closeFrame() {
-		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 	
 	private ImageIcon scaleImage(int width, int height, String imageLocation) {
