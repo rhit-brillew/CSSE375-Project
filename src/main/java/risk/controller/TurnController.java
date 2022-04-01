@@ -325,7 +325,7 @@ public class TurnController implements GameViewObserver {
 		}
 	}
 
-	public int playerRolls() {
+	public ArrayList<Integer> playerRolls() {
 		int rollResult = die.roll();
 		if(attackerRollCount==0) {
 			defenderRolls.add(rollResult);
@@ -334,15 +334,15 @@ public class TurnController implements GameViewObserver {
 				gameView.updateCurrentAttackingDisplay(currentPlayer);
 				determineBattleWinner();
 			}
+			return defenderRolls;
 		} else {
 			attackerRolls.add(rollResult);
 			attackerRollCount--;
 			if(attackerRollCount==0) {
 				gameView.updateStateToDefenderRoll();
 			}
+			return attackerRolls;
 		}
-		
-		return rollResult;
 	}
 	
 	private void updateBattleResults() {
