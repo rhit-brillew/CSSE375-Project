@@ -77,8 +77,7 @@ public class CardsController {
             player.removeCard(currentCard);
         }
         player.addNumberOfUnplacedArmies(calculateNumberOfUnplacedArmiesToAddForTurningInCards());
-        int setsTurnedIn = turnController.getSetsTurnedIn();
-        turnController.setSetsTurnedIn(setsTurnedIn++);
+        turnController.setsTurnedIn++;
     }
 
     private int calculateNumberOfUnplacedArmiesToAddForTurningInCards() {

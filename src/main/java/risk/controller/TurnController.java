@@ -64,7 +64,7 @@ public class TurnController implements GameViewObserver {
 		}
 	}
 
-	private void addArmyToTerritory(String territoryName) {
+	void addArmyToTerritory(String territoryName) {
 		verifyPlayerOwnsTerritoryAndTerritoryExists(territoryName);
 		int currentNumberOfArmies  = playerModels.get(currentPlayer).getNumberOfUnplacedArmies();
 		if(currentNumberOfArmies == 0){
@@ -142,73 +142,9 @@ public class TurnController implements GameViewObserver {
             AttackingPhaseController attackingPhaseController = new AttackingPhaseController(this);
 			attackingPhaseController.attackingPhase(territoryName);
 		} else {
-			reinforcingPhase(territoryName, placingTroop);
+            ReinforcingPhaseController reinforcingPhaseController = new ReinforcingPhaseController(this);
+			reinforcingPhaseController.reinforcingPhase(territoryName, placingTroop);
 		}
-	}
-
-	public boolean checkRemovedFromOrConnected(String territoryName) {
-		return territoryName.equals(territoryRemovedFrom)
-				|| territories.areTerritoriesConnectedByOwnedTerritories(territoryName, territoryRemovedFrom);
-	}
-
-	private void addAndUpdateView(String territoryName) {
-		addArmyToTerritory(territoryName);
-		gameView.updateCurrentReinforcingDisplay(currentPlayer,
-				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-		gameView.updateTerritoryArmyCountDisplay(territoryName,
-				territories.getTerritoryByName(territoryName).getNumberOfArmies());
-	}
-
-	private boolean checkPlacedTroops(String territoryName) {
-		return territoryRemovedFrom != null && !territoryRemovedFrom.equals(territoryName)
-				&& playerModels.get(currentPlayer).getNumberOfUnplacedArmies() != 0;
-	}
-
-	private void removeAndUpdateview(String territoryName) {
-		subtractArmyFromTerritory(territoryName);
-		gameView.updateCurrentReinforcingDisplay(currentPlayer,
-				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-		gameView.updateTerritoryArmyCountDisplay(territoryName,
-				territories.getTerritoryByName(territoryName).getNumberOfArmies());
-	}
-
-	private void placeTroop(String territoryName) {
-		try {
-			if(checkRemovedFromOrConnected(territoryName)) {
-				addAndUpdateView(territoryName);
-			} else {
-				gameView.updateErrorLabel(messages.getString("unreachableWarning"));
-			}
-		}catch(Exception e) {
-			gameView.updateErrorLabel(e.getMessage());
-		}
-	}
-
-	private void reinforcingPhase(String territoryName, boolean placingTroop) {
-		if(placingTroop) {
-			placeTroop(territoryName);
-		} else {
-			try {
-				if(checkPlacedTroops(territoryName)) {
-					gameView.updateErrorLabel(messages.getString("singleTerritoryMove"));
-					return;
-				}
-				removeAndUpdateview(territoryName);
-			}catch(Exception e) {
-				gameView.updateErrorLabel(e.getMessage());
-			}
-		}
-	}
-
-	private void subtractArmyFromTerritory(String territoryName) {
-		verifyPlayerOwnsTerritoryAndTerritoryExists(territoryName);
-		if(territories.getTerritoryByName(territoryName).getNumberOfArmies()==1) {
-			throw new IndexOutOfBoundsException(messages.getString("leaveTroopWarning"));
-		}
-		territoryRemovedFrom = territoryName;
-		territories.getTerritoryByName(territoryName).changeArmyAmountBy(-1);
-		int currentNumberOfArmies = playerModels.get(currentPlayer).getNumberOfUnplacedArmies();
-		playerModels.get(currentPlayer).setNumberOfUnplacedArmies(++currentNumberOfArmies);
 	}
 
 	private void placingPhase(String territoryName) {
@@ -340,11 +276,7 @@ public class TurnController implements GameViewObserver {
 	public int getSetsTurnedIn() {
 		return setsTurnedIn;
 	}
-
-	public void setSetsTurnedIn(int setsTurnedIn) {
-		this.setsTurnedIn = setsTurnedIn;
-	}
-
+    
     public String getCurrentAttacker() {
         return this.currentAttacker;
     }
