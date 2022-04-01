@@ -165,34 +165,54 @@ public class TurnController implements GameViewObserver {
 		}
 	}
 
+	public boolean checkRemovedFromOrConnected(String territoryName) {
+		return territoryName.equals(territoryRemovedFrom)
+				|| territories.areTerritoriesConnectedByOwnedTerritories(territoryName, territoryRemovedFrom);
+	}
+
+	private void addAndUpdateView(String territoryName) {
+		addArmyToTerritory(territoryName);
+		gameView.updateCurrentReinforcingDisplay(currentPlayer,
+				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
+		gameView.updateTerritoryArmyCountDisplay(territoryName,
+				territories.getTerritoryByName(territoryName).getNumberOfArmies());
+	}
+
+	private boolean checkPlacedTroops(String territoryName) {
+		return territoryRemovedFrom != null && !territoryRemovedFrom.equals(territoryName)
+				&& playerModels.get(currentPlayer).getNumberOfUnplacedArmies() != 0;
+	}
+
+	private void removeAndUpdateview(String territoryName) {
+		subtractArmyFromTerritory(territoryName);
+		gameView.updateCurrentReinforcingDisplay(currentPlayer,
+				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
+		gameView.updateTerritoryArmyCountDisplay(territoryName,
+				territories.getTerritoryByName(territoryName).getNumberOfArmies());
+	}
+
+	private void placeTroop(String territoryName) {
+		try {
+			if(checkRemovedFromOrConnected(territoryName)) {
+				addAndUpdateView(territoryName);
+			} else {
+				gameView.updateErrorLabel(messages.getString("unreachableWarning"));
+			}
+		}catch(Exception e) {
+			gameView.updateErrorLabel(e.getMessage());
+		}
+	}
+
 	private void reinforcingPhase(String territoryName, boolean placingTroop) {
 		if(placingTroop) {
-			try {
-				if(territoryName.equals(territoryRemovedFrom)
-						|| territories.areTerritoriesConnectedByOwnedTerritories(territoryName, territoryRemovedFrom)) {
-					addArmyToTerritory(territoryName);
-					gameView.updateCurrentReinforcingDisplay(currentPlayer,
-							playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-					gameView.updateTerritoryArmyCountDisplay(territoryName,
-							territories.getTerritoryByName(territoryName).getNumberOfArmies());
-				} else {
-					gameView.updateErrorLabel(messages.getString("unreachableWarning"));
-				}
-			}catch(Exception e) {
-				gameView.updateErrorLabel(e.getMessage());
-			}
+			placeTroop(territoryName);
 		} else {
 			try {
-				if(territoryRemovedFrom != null && !territoryRemovedFrom.equals(territoryName)
-						&& playerModels.get(currentPlayer).getNumberOfUnplacedArmies() != 0) {
+				if(checkPlacedTroops(territoryName)) {
 					gameView.updateErrorLabel(messages.getString("singleTerritoryMove"));
 					return;
 				}
-				subtractArmyFromTerritory(territoryName);
-				gameView.updateCurrentReinforcingDisplay(currentPlayer,
-						playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-				gameView.updateTerritoryArmyCountDisplay(territoryName,
-						territories.getTerritoryByName(territoryName).getNumberOfArmies());
+				removeAndUpdateview(territoryName);
 			}catch(Exception e) {
 				gameView.updateErrorLabel(e.getMessage());
 			}
@@ -222,34 +242,46 @@ public class TurnController implements GameViewObserver {
 		}
 	}
 
+	private boolean checkAdjacentTerritories(String territoryName) {
+		return territories.getTerritoryByName(territoryName)!=null
+				&& territories.areTerritoriesAdjacent(currentAttacker, territoryName);
+	}
+
+	private void beginAttack(String territoryName) {
+		if(territories.getTerritoryByName(territoryName).getOwner()
+				.equals(playerModels.get(currentPlayer).getColor())) {
+			gameView.updateErrorLabel(messages.getString("attackOpponentWarning"));
+			return;
+		}
+		currentDefender = territoryName;
+		gameView.highlightTerritory(territoryName);
+		getDiceAmount();
+	}
+
+	private void updateViewandAttacker(String territoryName) {
+		verifyPlayerOwnsTerritoryAndTerritoryExists(territoryName);
+		if(territories.getTerritoryByName(territoryName).getNumberOfArmies()==1) {
+			gameView.updateErrorLabel(messages.getString("minimumAttack"));
+			return;
+		}
+		gameView.highlightTerritory(territoryName);
+		currentAttacker= territoryName;
+	}
+
 	private void attackingPhase(String territoryName) {
 		if(currentAttacker != null) {
 			if(currentDefender!=null) {
 				gameView.updateErrorLabel(messages.getString("battleInProgress"));
 				return;
 			}
-			if(territories.getTerritoryByName(territoryName)!=null 
-					&& territories.areTerritoriesAdjacent(currentAttacker, territoryName)) {
-				if(territories.getTerritoryByName(territoryName).getOwner()
-						.equals(playerModels.get(currentPlayer).getColor())) {
-					gameView.updateErrorLabel(messages.getString("attackOpponentWarning"));
-					return;
-				}
-				currentDefender = territoryName;
-				gameView.highlightTerritory(territoryName);
-				getDiceAmount();
+			if(checkAdjacentTerritories(territoryName)) {
+				beginAttack(territoryName);
 			} else {
 				gameView.updateErrorLabel(messages.getString("attackInstructions"));
 			}
 		} else {
 			try{
-				verifyPlayerOwnsTerritoryAndTerritoryExists(territoryName);
-				if(territories.getTerritoryByName(territoryName).getNumberOfArmies()==1) {
-					gameView.updateErrorLabel(messages.getString("minimumAttack"));
-					return;
-				}
-				gameView.highlightTerritory(territoryName);
-				currentAttacker= territoryName;
+				updateViewandAttacker(territoryName);
 			}catch(Exception e) {
 				gameView.updateErrorLabel(e.getMessage());
 			}
@@ -435,28 +467,40 @@ public class TurnController implements GameViewObserver {
 		playerModels.get(currentPlayer).addCard(cardDrawn);
 	}
 
+	private void changeGamePhaseFromTrading() {
+		if(playerModels.get(currentPlayer).getCardCount() >= 5) {
+			gameView.updateErrorLabel(messages.getString("mustTradeWarning"));
+			return;
+		}
+		gamePhase = GamePhase.PLACING;
+		startNextPhase();
+	}
+
+	private void changeGamePhaseFromPlacing() {
+		if(playerModels.get(currentPlayer).getNumberOfUnplacedArmies()!=0) {
+			gameView.updateErrorLabel(messages.getString("troopsNotPlaced"));
+		} else {
+			gamePhase = GamePhase.ATTACKING;
+			startNextPhase();
+		}
+	}
+
+	private void changeGamePhaseFromAttacking() {
+		if(getsCard) {
+			drawCard();
+		}
+		getsCard = false;
+		gamePhase = GamePhase.REINFORCING;
+		startNextPhase();
+	}
+
 	public void nextPhase() {
 		if(gamePhase == GamePhase.TRADING) {
-			if(playerModels.get(currentPlayer).getCardCount() >= 5) {
-				gameView.updateErrorLabel(messages.getString("mustTradeWarning"));
-				return;
-			}
-			gamePhase = GamePhase.PLACING;
-			startNextPhase();
+			changeGamePhaseFromTrading();
 		}else if(gamePhase == GamePhase.PLACING) {
-			if(playerModels.get(currentPlayer).getNumberOfUnplacedArmies()!=0) {
-				gameView.updateErrorLabel(messages.getString("troopsNotPlaced"));
-			} else {
-				gamePhase = GamePhase.ATTACKING;
-				startNextPhase();
-			}
+			changeGamePhaseFromPlacing();
 		}else if(gamePhase == GamePhase.ATTACKING) {
-			if(getsCard) {
-				drawCard();
-			}
-			getsCard = false;
-			gamePhase = GamePhase.REINFORCING;
-			startNextPhase();
+			changeGamePhaseFromAttacking();
 		} else {
 			if(playerModels.get(currentPlayer).getNumberOfUnplacedArmies()!=0) {
 				gameView.updateErrorLabel(messages.getString("troopsNotPlaced"));
