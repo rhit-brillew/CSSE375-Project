@@ -39,7 +39,7 @@ public class PlayerModel {
 	public void placeArmy() {
 		numberOfUnplacedArmies--;
 	}
-	
+
 	public void addCard(Card newCard) {
 		cards.add(newCard);
 	}
