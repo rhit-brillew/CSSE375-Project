@@ -3,10 +3,8 @@ package risk.controller;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import risk.model.PlayerModel;
-import risk.model.SixSidedDie;
-import risk.model.StaticResourceBundle;
-import risk.model.TerritoryModel;
+
+import risk.model.*;
 import risk.view.GameView;
 
 public class SetupController implements Runnable, GameViewObserver {
@@ -107,8 +105,9 @@ public class SetupController implements Runnable, GameViewObserver {
 	private void placeArmies(){
 		for(int i = 0; i < playerModels.size(); i++){
 			currentPlayer = i;
-			for(int j = 0; j < playerModels.get(i).getCardCount(); j++){
-				claimTerritory(playerModels.get(i).getCardAtIndex(j).getTerritoryName());
+			CardManager cards = playerModels.get(i).getCards();
+			for(Card card : cards.getTotalCards()){
+				claimTerritory(card.getTerritoryName());
 			}
 		}
 		currentPlayer = 0;
