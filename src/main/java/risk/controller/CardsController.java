@@ -19,6 +19,31 @@ public class CardsController {
         GameView gameView = turnController.getGameView();
         int cardCount = playerModels.get(currentPlayer).getCardCount();
         if(cardCount < 3) {
+            gameView.updateErrorLabel(turnController.messages.getString("noCardWarning"));
+            return;
+        }
+
+        CardManager cardManager = playerModels.get(currentPlayer).getCards();
+        determineCardToRemoveAndRemoveThem(cardManager);
+        gameView.updateErrorLabel(turnController.messages.getString("cardTrade"));
+    }
+
+    private void determineCardToRemoveAndRemoveThem(CardManager cardManager) {
+        try {
+            ArrayList<Card> cardsToRemove = cardManager.determineCardToRemove();
+            removeCardsFromHandAndAddUnplacedArmiesToPlayer(cardsToRemove);
+        } catch(Exception e) {
+            turnController.getGameView().updateErrorLabel(turnController.messages.getString("cardCriteriaWarning"));
+            return;
+        }
+    }
+
+    public void tradeInCards() {
+        ArrayList<PlayerModel> playerModels = turnController.getPlayerModels();
+        int currentPlayer = turnController.getCurrentPlayer();
+        GameView gameView = turnController.getGameView();
+        int cardCount = playerModels.get(currentPlayer).getCardCount();
+        if(cardCount < 3) {
             gameView.updateErrorLabel(turnController.getMessages().getString("noCardWarning"));
             return;
         }
