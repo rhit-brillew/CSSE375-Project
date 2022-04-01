@@ -1,4 +1,10 @@
 <data>
+	<continent name="North America" troopValue="5"/>
+	<continent name="South America" troopValue="2"/>
+	<continent name="Asia" troopValue="7"/>
+	<continent name="Africa" troopValue="3"/>
+	<continent name="Europe" troopValue="5"/>
+	<continent name="Australia" troopValue="2"/>
 	<territory name="Alaska" x="120" y="190" continent="North America" troopType="Infantry"/>
 	<territory name="Northwest Territory" x="290" y="200" continent="North America" troopType="Artillery"/>
 	<territory name="Alberta" x="340" y="320" continent="North America" troopType="Cavalry"/>

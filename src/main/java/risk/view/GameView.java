@@ -38,16 +38,18 @@ public class GameView extends GameViewObservable {
 	private JSlider troopCount;
 	private BufferedImage territoryImage;
 	private int territorySize = 30;
+	private int board;
 	private HashMap<String, JLabel> territoryCircles;
 	private HashMap<String, JLabel> territoryArmyCounts;
 
 	private ResourceBundle messages;
 	
-	private GameView(int numberOfPlayers, HashMap<String, Point> territories) {
+	private GameView(int numberOfPlayers, HashMap<String, Point> territories, int board) {
 		this.numberOfPlayers = numberOfPlayers;
 		this.messages = StaticResourceBundle.getResourceBundle();
 		territoryCircles = new HashMap<>();
 		territoryArmyCounts = new HashMap<>();
+		this.board = board;
 		
 		initializeFrame();
 		initializeMapPane();
@@ -64,8 +66,8 @@ public class GameView extends GameViewObservable {
 		frame.setVisible(true);
 	}
 
-	public static void create(int numberOfPlayers, HashMap<String, Point> territories) {
-		gameView = new GameView(numberOfPlayers, territories);
+	public static void create(int numberOfPlayers, HashMap<String, Point> territories, int board) {
+		gameView = new GameView(numberOfPlayers, territories, board);
 	}
 
 	public static GameView getGameView() {
@@ -75,6 +77,8 @@ public class GameView extends GameViewObservable {
 	public int getNumberOfPlayers() {
 		return numberOfPlayers;
 	}
+
+	public int getBoardNumber(){return this.board;}
 
 	public ResourceBundle getResourceBundle() {
 		return messages;
@@ -209,8 +213,8 @@ public class GameView extends GameViewObservable {
 	}
 	
 	private void addMap() {
-		ImageIcon image = scaleImage(FRAME_WIDTH, FRAME_HEIGHT - GAME_BAR_PANEL_HEIGHT, 
-					messages.getString("gameBoardLocation"));
+		ImageIcon image = scaleImage(FRAME_WIDTH, FRAME_HEIGHT - GAME_BAR_PANEL_HEIGHT,
+				"src/main/resources/board"+ this.board + "/" + messages.getString("gameBoard"));
 		JLabel backgroundLabel = new JLabel(image);
 		
 		backgroundLabel.setLayout(null);

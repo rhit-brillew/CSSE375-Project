@@ -368,27 +368,8 @@ public class TurnController implements GameViewObserver {
 	}
 
 	private int numberOfArmiesFromContinent(){
-		int numberOfAdditionalArmies = 0;
 		Color playerColor = playerModels.get(currentPlayer).getColor();
-		if(territories.ownsContinentAfrica(playerColor)){
-			numberOfAdditionalArmies += 3;
-		}
-		if(territories.ownsContinentAsia(playerColor)){
-			numberOfAdditionalArmies += 7;
-		}
-		if(territories.ownsContinentAustralia(playerColor)){
-			numberOfAdditionalArmies += 2;
-		}
-		if(territories.ownsContinentEurope(playerColor)){
-			numberOfAdditionalArmies += 5;
-		}
-		if(territories.ownsContinentNorthAmerica(playerColor)){
-			numberOfAdditionalArmies += 5;
-		}
-		if(territories.ownsContinentSouthAmerica(playerColor)){
-			numberOfAdditionalArmies += 2;
-		}
-		return numberOfAdditionalArmies;
+		return this.territories.numberTroopsForOwningContinent(playerColor);
 	}
 	
 	public void determineNumberOfRolls(int selectedAttackerRollNumber) {
