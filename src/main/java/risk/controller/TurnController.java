@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.ResourceBundle;
-import risk.model.Card;
-import risk.model.PlayerModel;
-import risk.model.SixSidedDie;
-import risk.model.StaticResourceBundle;
-import risk.model.TerritoryModel;
+
+import risk.model.*;
 import risk.view.GameView;
 
 public class TurnController implements GameViewObserver {
@@ -262,39 +259,18 @@ public class TurnController implements GameViewObserver {
 			gameView.updateErrorLabel(messages.getString("noCardWarning"));
 			return;
 		}
-		ArrayList<Card> infantryCards = new ArrayList<>();
-		ArrayList<Card> cavalryCards = new ArrayList<>();
-		ArrayList<Card> artilleryCards = new ArrayList<>();
 
-		for(int k=0; k<cardCount; k++) {
-			Card currentCard = playerModels.get(currentPlayer).getCardAtIndex(k);
-			if(currentCard.getTroopType().equals("Infantry")) {
-				infantryCards.add(currentCard);
-			}else if(currentCard.getTroopType().equals("Cavalry")) {
-				cavalryCards.add(currentCard);
-			}else {
-				artilleryCards.add(currentCard);
-			}
-		}
-		determineCardToRemoveAndRemoveThem(infantryCards, cavalryCards, artilleryCards);
+		CardManager cardManager = playerModels.get(currentPlayer).getCards();
+		determineCardToRemoveAndRemoveThem(cardManager);
+
 		gameView.updateErrorLabel(messages.getString("cardTrade"));
 	}
 
-	private void determineCardToRemoveAndRemoveThem(ArrayList<Card> infantryCards, ArrayList<Card> cavalryCards,
-													ArrayList<Card> artilleryCards) {
-		if(infantryCards.size()>=3) {
-			removeCardsFromHandAndAddUnplacedArmiesToPlayer(new ArrayList<>(infantryCards.subList(0, 3)));
-		}else if(cavalryCards.size()>=3) {
-			removeCardsFromHandAndAddUnplacedArmiesToPlayer(new ArrayList<>(cavalryCards.subList(0, 3)));
-		}else if(artilleryCards.size()>=3) {
-			removeCardsFromHandAndAddUnplacedArmiesToPlayer(new ArrayList<>(artilleryCards.subList(0, 3)));
-		}else if(infantryCards.size()>0 && cavalryCards.size()>0 && artilleryCards.size()>0) {
-			ArrayList<Card> cardsToRemove = new ArrayList<>();
-			cardsToRemove.add(infantryCards.get(0));
-			cardsToRemove.add(cavalryCards.get(0));
-			cardsToRemove.add(artilleryCards.get(0));
+	private void determineCardToRemoveAndRemoveThem(CardManager cardManager) {
+		try {
+			ArrayList<Card> cardsToRemove = cardManager.determineCardToRemove();
 			removeCardsFromHandAndAddUnplacedArmiesToPlayer(cardsToRemove);
-		}else {
+		} catch(Exception e) {
 			gameView.updateErrorLabel(messages.getString("cardCriteriaWarning"));
 			return;
 		}
@@ -325,7 +301,7 @@ public class TurnController implements GameViewObserver {
 		}
 	}
 
-	public int playerRolls() {
+	public ArrayList<Integer> playerRolls() {
 		int rollResult = die.roll();
 		if(attackerRollCount==0) {
 			defenderRolls.add(rollResult);
@@ -334,15 +310,15 @@ public class TurnController implements GameViewObserver {
 				gameView.updateCurrentAttackingDisplay(currentPlayer);
 				determineBattleWinner();
 			}
+			return defenderRolls;
 		} else {
 			attackerRolls.add(rollResult);
 			attackerRollCount--;
 			if(attackerRollCount==0) {
 				gameView.updateStateToDefenderRoll();
 			}
+			return attackerRolls;
 		}
-		
-		return rollResult;
 	}
 	
 	private void updateBattleResults() {
