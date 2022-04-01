@@ -182,48 +182,32 @@ public class SetupController implements Runnable, GameViewObserver {
 	private void allTerritoriesClaimedStillUnplacedArmies(String territoryName, TerritoryModel territory) {
 		if(territory.getOwner() == playerModels.get(currentPlayer).getColor()){
 			if(isTwoPlayerGame()){
-				if(twoPlayerGameArmiesPlacedOnTurn < 1) {
-					twoPlayerAddFirstArmy(territoryName);
+				if(twoPlayerGameArmiesPlacedOnTurn<1) {
+					addOneArmyToTerritory(territoryName);
+					twoPlayerGameArmiesPlacedOnTurn++;
+					gameView.updateCurrentPlacingDisplay(currentPlayer,
+							playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
 				}else if(twoPlayerGameArmiesPlacedOnTurn == 1){
-					twoPlayerAddArmy(territoryName);
+					addOneArmyToTerritory(territoryName);
+					twoPlayerGameArmiesPlacedOnTurn++;
+					gameView.updatePlaceNeutralArmy();
 				}else {
 					gameView.updateErrorLabel(messages.getString("neutralWarning"));
 				}
 			} else {
-				addArmy(territoryName);
+				addOneArmyToTerritory(territoryName);
+				incrementCurrentPlayer();
+				gameView.updateCurrentPlacingDisplay(currentPlayer,
+						playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
 			}
 		} else if (isTwoPlayerGame() && territory.getOwner().equals(neutralPlayer.getColor())
 				&& twoPlayerGameArmiesPlacedOnTurn == 2){
-			twoPlayerAddArmyToNeutral(territoryName);
+			addOneArmyToTerritory(territoryName);
+			twoPlayerGameArmiesPlacedOnTurn = 0;
+			incrementCurrentPlayer();
+			gameView.updateCurrentPlacingDisplay(currentPlayer,
+					playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
 		}
-	}
-
-	private void twoPlayerAddFirstArmy(String territoryName) {
-		addOneArmyToTerritory(territoryName);
-		twoPlayerGameArmiesPlacedOnTurn++;
-		gameView.updateCurrentPlacingDisplay(currentPlayer,
-				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-	}
-
-	private void twoPlayerAddArmy(String territoryName) {
-		addOneArmyToTerritory(territoryName);
-		twoPlayerGameArmiesPlacedOnTurn++;
-		gameView.updatePlaceNeutralArmy();
-	}
-
-	private void addArmy(String territoryName) {
-		addOneArmyToTerritory(territoryName);
-		incrementCurrentPlayer();
-		gameView.updateCurrentPlacingDisplay(currentPlayer,
-				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-	}
-
-	private void twoPlayerAddArmyToNeutral(String territoryName) {
-		addOneArmyToTerritory(territoryName);
-		twoPlayerGameArmiesPlacedOnTurn = 0;
-		incrementCurrentPlayer();
-		gameView.updateCurrentPlacingDisplay(currentPlayer,
-				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
 	}
 
 	private boolean isTwoPlayerGame() {
