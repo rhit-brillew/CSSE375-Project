@@ -262,7 +262,6 @@ public class TurnController implements GameViewObserver {
 
 		CardManager cardManager = playerModels.get(currentPlayer).getCards();
 		determineCardToRemoveAndRemoveThem(cardManager);
-
 		gameView.updateErrorLabel(messages.getString("cardTrade"));
 	}
 
