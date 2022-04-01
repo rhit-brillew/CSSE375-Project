@@ -94,6 +94,7 @@ public class SetupController implements Runnable, GameViewObserver {
 	}
 
 	void twoPlayerSetupPhase() {
+
 		neutralPlayer = new PlayerModel(getStartingInfantryFor(2), Color.DARK_GRAY);
 		playerModels.add(neutralPlayer);
 		territories.shuffleDeck();

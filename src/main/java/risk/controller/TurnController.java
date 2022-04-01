@@ -114,6 +114,7 @@ public class TurnController implements GameViewObserver {
 		territories.getTerritoryByName(currentDefender).setOwner(playerColor);
 		if(hasWon()) {
 			gameView.showWinMessage(currentPlayer);
+			gameView.updateGlobalGameState(currentPlayer, "the winner!");
 			gameView.removeObserver(this);
 			return;
 		}
@@ -135,6 +136,7 @@ public class TurnController implements GameViewObserver {
 	}
 	
 	private void startNextPhase() {
+		gameView.updateGlobalGameState(currentPlayer, gamePhase.toString()); //todo
 		if(gamePhase == GamePhase.TRADING) {
 			gameView.updateCurrentPlayerTrading(currentPlayer, playerModels.get(currentPlayer).getCardCount());
 		}else if(gamePhase == GamePhase.PLACING) {
@@ -153,6 +155,7 @@ public class TurnController implements GameViewObserver {
 	}
 
 	public void territoryPressed(String territoryName, boolean placingTroop) {
+		gameView.updateGlobalGameState(currentPlayer, gamePhase.toString()); //todo
 		if(gamePhase == GamePhase.PLACING) {
 			placingPhase(territoryName);
 		} else if(gamePhase == GamePhase.TRADING) {
@@ -223,6 +226,7 @@ public class TurnController implements GameViewObserver {
 	}
 
 	private void attackingPhase(String territoryName) {
+		gameView.updateGlobalGameState(currentPlayer, gamePhase.toString()); //todo
 		if(currentAttacker != null) {
 			if(currentDefender!=null) {
 				gameView.updateErrorLabel(messages.getString("battleInProgress"));
@@ -402,7 +406,7 @@ public class TurnController implements GameViewObserver {
 		}
 		attackerRolls = new ArrayList<Integer>();
 		defenderRolls = new ArrayList<Integer>();
-		gameView.updateCurrentPlayerRollingLabel(currentPlayer+1);
+		gameView.updateCurrentPlayerRollingLabel(currentPlayer);
 	}
 	
 	void incrementCurrentPlayer() {
@@ -436,6 +440,7 @@ public class TurnController implements GameViewObserver {
 	}
 
 	public void nextPhase() {
+		gameView.updateGlobalGameState(currentPlayer, gamePhase.toString()); //todo
 		if(gamePhase == GamePhase.TRADING) {
 			if(playerModels.get(currentPlayer).getCardCount() >= 5) {
 				gameView.updateErrorLabel(messages.getString("mustTradeWarning"));

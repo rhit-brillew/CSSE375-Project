@@ -15,6 +15,7 @@ import javax.swing.border.Border;
 import risk.controller.ColorFactory;
 import risk.controller.GameViewObservable;
 import risk.controller.GameViewObserver;
+import risk.controller.TurnController;
 import risk.model.StaticResourceBundle;
 
 public class GameView extends GameViewObservable {
@@ -41,6 +42,9 @@ public class GameView extends GameViewObservable {
 	private HashMap<String, JLabel> territoryCircles;
 	private HashMap<String, JLabel> territoryArmyCounts;
 
+	//TODO:
+	private JLabel globalGameStateLabel;
+
 	private ResourceBundle messages;
 	
 	private GameView(int numberOfPlayers, HashMap<String, Point> territories) {
@@ -61,6 +65,10 @@ public class GameView extends GameViewObservable {
 		addMap();
 		addPlayerIcons();
 		addTerritories(territories);
+
+		//TODO:
+		initializeGlobalGameStateLabel();
+
 		frame.setVisible(true);
 	}
 
@@ -110,6 +118,24 @@ public class GameView extends GameViewObservable {
 		
 		gameBarPanel.add(errorLabel);
 		gameBarPanel.add(gameState);
+	}
+
+	//TODO:
+	private void initializeGlobalGameStateLabel(){
+		ImageIcon image = scaleImage(FRAME_WIDTH, 70, "src/main/resources/images/bottomGameBar.png");
+		JLabel label = new JLabel("", image, SwingConstants.CENTER);
+		label.setLayout(null);
+		label.setBounds(0, FRAME_HEIGHT-200, FRAME_WIDTH, 70);
+		mapPane.add(label, JLayeredPane.PALETTE_LAYER, 2);
+		label.setVisible(true);
+
+		globalGameStateLabel = new JLabel(messages.getString("setupLabel"));
+		globalGameStateLabel.setLayout(null);
+		globalGameStateLabel.setBounds(FRAME_WIDTH/2 - (int)globalGameStateLabel.getPreferredSize().getWidth()/2, FRAME_HEIGHT-230, FRAME_WIDTH/2, 100);
+		globalGameStateLabel.setFont(new Font(gameState.getFont().getName(), Font.PLAIN, 18));
+		globalGameStateLabel.setForeground(Color.WHITE);
+		mapPane.add(globalGameStateLabel, JLayeredPane.PALETTE_LAYER, 1);
+		globalGameStateLabel.setVisible(true);
 	}
 	
 	private void initializeAttackCount() {
@@ -447,5 +473,10 @@ public class GameView extends GameViewObservable {
 	public void updateTerritoryArmyCountDisplay(String territoryName, int armyCount) {
 		JLabel territoryCountLabel = territoryArmyCounts.get(territoryName);
 		territoryCountLabel.setText(""+armyCount);
+	}
+
+	//TODO:
+	public void updateGlobalGameState(int currentPlayer, String state){
+		globalGameStateLabel.setText("Player " + (currentPlayer+1) + " is " + state);
 	}
 }
