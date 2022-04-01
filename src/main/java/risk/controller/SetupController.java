@@ -3,8 +3,10 @@ package risk.controller;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-
-import risk.model.*;
+import risk.model.PlayerModel;
+import risk.model.SixSidedDie;
+import risk.model.StaticResourceBundle;
+import risk.model.TerritoryModel;
 import risk.view.GameView;
 
 public class SetupController implements Runnable, GameViewObserver {
@@ -71,7 +73,7 @@ public class SetupController implements Runnable, GameViewObserver {
 		setupPhase();
 	}
 	
-	public ArrayList<Integer> playerRolls() {
+	public int playerRolls() {
 		int rollResult = die.roll();
 		startingRolls[currentPlayer] = rollResult;
 		incrementCurrentPlayer();
@@ -80,10 +82,7 @@ public class SetupController implements Runnable, GameViewObserver {
 		} else {
 			gameView.updateCurrentPlayerRollingLabel(currentPlayer + 1);
 		}
-
-		ArrayList<Integer> totalRolls = new ArrayList<Integer>();
-		totalRolls.add(rollResult);
-		return totalRolls;
+		return rollResult;
 	}
 
 	private void setupPhase() {
@@ -105,9 +104,8 @@ public class SetupController implements Runnable, GameViewObserver {
 	private void placeArmies(){
 		for(int i = 0; i < playerModels.size(); i++){
 			currentPlayer = i;
-			CardManager cards = playerModels.get(i).getCards();
-			for(Card card : cards.getTotalCards()){
-				claimTerritory(card.getTerritoryName());
+			for(int j = 0; j < playerModels.get(i).getCardCount(); j++){
+				claimTerritory(playerModels.get(i).getCardAtIndex(j).getTerritoryName());
 			}
 		}
 		currentPlayer = 0;

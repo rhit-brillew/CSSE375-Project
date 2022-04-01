@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class PlayerModel {
 	private int numberOfUnplacedArmies;
 	private Color color;
-	private CardManager cards;
+	private ArrayList<Card> cards;
 
 	public PlayerModel(Integer unplacedArmies, Color color){
 		if(unplacedArmies > 40){
@@ -16,7 +16,7 @@ public class PlayerModel {
 		} else {
 			this.numberOfUnplacedArmies = unplacedArmies;
 			this.color = color;
-			this.cards = new CardManager();
+			this.cards = new ArrayList<>();
 		}
 	}
 
@@ -43,11 +43,15 @@ public class PlayerModel {
 	public void addCard(Card newCard) {
 		cards.add(newCard);
 	}
-
-	public int getCardCount() { return cards.getCardCount(); }
-
-	public CardManager getCards() { return cards; }
-
+	
+	public int getCardCount() {
+		return cards.size();
+	}
+	
+	public Card getCardAtIndex(int index) {
+		return cards.get(index);
+	}
+	
 	public void removeCard(Card cardToRemove) {
 		this.cards.remove(cardToRemove);
 	}
