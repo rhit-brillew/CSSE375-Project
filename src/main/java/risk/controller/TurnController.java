@@ -191,7 +191,6 @@ public class TurnController implements GameViewObserver {
 		currentDefender = null;
 	}
 	
-
 	public void determineNumberOfRolls(int selectedAttackerRollNumber) {
 		attackerRollCount = selectedAttackerRollNumber;
 		if(territories.getTerritoryByName(currentDefender).getNumberOfArmies() == 1) {

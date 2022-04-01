@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import risk.model.Card;
+import risk.model.Edge;
 import risk.model.PlayerModel;
 import risk.model.TerritoryModel;
 
@@ -19,46 +20,14 @@ public class TerritoryMapController {
 	ArrayList<TerritoryModel> allTerritories = new ArrayList<>();
 	ArrayList<Card> deck = new ArrayList<>();
 	ArrayList<Edge> edges = new ArrayList<>();
-
-	static class Edge {
-		private String t1;
-		private String t2;
-		public boolean traversed;
-
-		Edge(String t1, String t2) {
-			this.t1 = t1;
-			this.t2 = t2;
-			traversed = false;
-		}
-
-		public String getT1() {
-			return  t1;
-		}
-
-		public String getT2() {
-			return t2;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-			Edge edge = (Edge) o;
-			return traversed == edge.traversed && t1.equals(edge.t1) && t2.equals(edge.t2);
-		}
-		
-		@Override
-		public int hashCode() {
-			throw new UnsupportedOperationException("Hashcode not supported");
-		}
-	}
+	HashMap<String, Integer> continents = new HashMap<String, Integer>();
 
 	public void addTerritory(TerritoryModel territoryModel) {
 		allTerritories.add(territoryModel);
+	}
+
+	public void addContinent(String name, Integer troopValue){
+		continents.put(name, troopValue);
 	}
 	
 	public void addCard(Card newCard) {
@@ -186,10 +155,20 @@ public class TerritoryMapController {
 		this.deck = cardList;
 	}
 
-	public boolean ownsContinentAsia(Color territoryOwner){
-		ArrayList<String> asianTerritories = getAllTerritoriesInContinent("Asia");
-		for(int i = 0; i < asianTerritories.size(); i++){
-			if(!getTerritoryByName(asianTerritories.get(i)).getOwner().equals(territoryOwner)){
+	public int numberTroopsForOwningContinent(Color territoryOwner){
+		int bonusTroops = 0;
+		for(String cont : this.continents.keySet()){
+			if(checkOwnsContinent(territoryOwner, cont)){
+				bonusTroops += this.continents.get(cont);
+			}
+		}
+		return bonusTroops;
+	}
+
+	public boolean checkOwnsContinent(Color territoryOwner, String continentName){
+		ArrayList<String> territories = getAllTerritoriesInContinent(continentName);
+		for (String territory : territories) {
+			if (!getTerritoryByName(territory).getOwner().equals(territoryOwner)) {
 				return false;
 			}
 		}
@@ -206,78 +185,34 @@ public class TerritoryMapController {
 		return result;
 	}
 
-	public boolean ownsContinentEurope(Color territoryOwner){
-		ArrayList<String> europeanTerritories = getAllTerritoriesInContinent("Europe");
-		for(int i = 0; i < europeanTerritories.size(); i++){
-			if(!getTerritoryByName(europeanTerritories.get(i)).getOwner().equals(territoryOwner)){
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public boolean ownsContinentNorthAmerica(Color territoryOwner){
-		ArrayList<String> northAmericanTerritories = getAllTerritoriesInContinent("North America");
-		for(int i = 0; i < northAmericanTerritories.size(); i++){
-			if(!getTerritoryByName(northAmericanTerritories.get(i)).getOwner().equals(territoryOwner)){
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public boolean ownsContinentSouthAmerica(Color territoryOwner){
-		ArrayList<String> southAmericanTerritories = getAllTerritoriesInContinent("South America");
-		for(int i = 0; i < southAmericanTerritories.size(); i++){
-			if(!getTerritoryByName(southAmericanTerritories.get(i)).getOwner().equals(territoryOwner)){
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public boolean ownsContinentAfrica(Color territoryOwner){
-		ArrayList<String> africanTerritories = getAllTerritoriesInContinent("Africa");
-		for(int i = 0; i < africanTerritories.size(); i++){
-			if(!getTerritoryByName(africanTerritories.get(i)).getOwner().equals(territoryOwner)){
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public boolean ownsContinentAustralia(Color territoryOwner){
-		ArrayList<String> australianTerritories = getAllTerritoriesInContinent("Australia");
-		for(int i = 0; i < australianTerritories.size(); i++){
-			if(!getTerritoryByName(australianTerritories.get(i)).getOwner().equals(territoryOwner)){
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public static TerritoryMapController loadTerritoryXMLData() {
-		TerritoryMapController territories = readTerritoriesXML();
-		addEdgeMapFromXML(territories);
+	public static TerritoryMapController loadTerritoryXMLData(int board) {
+		TerritoryMapController territories = readTerritoriesXML(board);
+		addEdgeMapFromXML(territories, board);
 		return territories;
 	}
 
-	private static TerritoryMapController readTerritoriesXML() {
+	private static TerritoryMapController readTerritoriesXML(int board) {
 		TerritoryMapController territoryMapController = new TerritoryMapController();
-		NodeList list;
+		NodeList list, continentList;
 
 		try {
-			File file = new File("src/main/resources/territoryLocations.xml");
+			File file = new File("src/main/resources/board"+ board +"/territoryLocations.xml");
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = factory.newDocumentBuilder();
 			Document document = docBuilder.parse(file);
 			document.getDocumentElement().normalize();
 			list = document.getElementsByTagName("territory");
+			continentList = document.getElementsByTagName("continent");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
+		addTerritoriesToController(list, territoryMapController);
+		addContinentsToController(continentList, territoryMapController);
+		return territoryMapController;
+	}
 
+	private static void addTerritoriesToController(NodeList list, TerritoryMapController controller){
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			Element element = (Element) node;
@@ -287,16 +222,25 @@ public class TerritoryMapController {
 			String continent = element.getAttribute("continent");
 			Point location = new Point(x, y);
 			String troopType = element.getAttribute("troopType");
-			territoryMapController.addTerritory(new TerritoryModel(name, location, continent));
-			territoryMapController.addCard(new Card(name, troopType));
+			controller.addTerritory(new TerritoryModel(name, location, continent));
+			controller.addCard(new Card(name, troopType));
 		}
-		return territoryMapController;
 	}
 
-	private static void addEdgeMapFromXML(TerritoryMapController territoryMapController) {
+	private static void addContinentsToController(NodeList contList, TerritoryMapController controller){
+		for (int i = 0; i < contList.getLength(); i++) {
+			Node node = contList.item(i);
+			Element element = (Element) node;
+			String name = element.getAttribute("name");
+			int troopValue = Integer.parseInt(element.getAttribute("troopValue"));
+			controller.addContinent(name,troopValue);
+		}
+	}
+
+	private static void addEdgeMapFromXML(TerritoryMapController territoryMapController, int board) {
 		NodeList nodeList;
 		try {
-			File file = new File("src/main/resources/territoryEdges.xml");
+			File file = new File("src/main/resources/board"+ board +"/territoryEdges.xml");
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(file);
@@ -306,13 +250,16 @@ public class TerritoryMapController {
 			e.printStackTrace();
 			return;
 		}
+		addEdgesToController(nodeList, territoryMapController);
+	}
 
+	private static void addEdgesToController(NodeList nodeList, TerritoryMapController controller){
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
 			Element element = (Element) node;
 			String t1 = element.getAttribute("t1");
 			String t2 = element.getAttribute("t2");
-			territoryMapController.addEdge(t1, t2);
+			controller.addEdge(t1, t2);
 		}
 	}
 }
