@@ -23,6 +23,7 @@ public class TurnController implements GameViewObserver {
 	boolean getsCard = false;
 	String territoryRemovedFrom;
 	ResourceBundle messages;
+	PhaseController phaseController;
 	
 	int attackerRollCount = 0;
 	int defenderRollCount = 0;
@@ -31,7 +32,7 @@ public class TurnController implements GameViewObserver {
 
 
 	private SixSidedDie die;
-	
+
 	public enum GamePhase {
 		PLACING,
 		TRADING,
@@ -52,7 +53,8 @@ public class TurnController implements GameViewObserver {
 		gamePhase = GamePhase.TRADING;
 		messages = StaticResourceBundle.getResourceBundle();
 		gameView.addObserver(this);
-		startNextPhase();
+		phaseController = new PhaseController(this);
+		phaseController.startNextPhase();
 	}
 
 	private void verifyPlayerOwnsTerritoryAndTerritoryExists(String territoryName){
@@ -132,24 +134,6 @@ public class TurnController implements GameViewObserver {
 		gameView.updateTerritoryOwnerDisplay(currentDefender, playerColor);
 		getsCard = true;
 		updateBattleResults();
-	}
-	
-	private void startNextPhase() {
-		if(gamePhase == GamePhase.TRADING) {
-			gameView.updateCurrentPlayerTrading(currentPlayer, playerModels.get(currentPlayer).getCardCount());
-		}else if(gamePhase == GamePhase.PLACING) {
-			int newTroops = calculateNumberOfArmies() 
-				+ playerModels.get(currentPlayer).getNumberOfUnplacedArmies();
-			playerModels.get(currentPlayer).setNumberOfUnplacedArmies(newTroops);
-			gameView.updateCurrentPlacingDisplay(currentPlayer,
-					playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-		}else if(gamePhase == GamePhase.ATTACKING) {
-			gameView.updateCurrentAttackingDisplay(currentPlayer);
-		}else {
-			territoryRemovedFrom = null;
-			gameView.updateCurrentReinforcingDisplay(currentPlayer,
-					playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-		}
 	}
 
 	public void territoryPressed(String territoryName, boolean placingTroop) {
@@ -456,59 +440,48 @@ public class TurnController implements GameViewObserver {
 		}
 		return true;
 	}
-	
-	private void drawCard() {
-		if(territories.deck.size()==0) {
-			return;
-		}
-		Random rand = new Random();
-		int cardIndex = rand.nextInt(territories.deck.size());
-		Card cardDrawn = territories.deck.remove(cardIndex);
-		playerModels.get(currentPlayer).addCard(cardDrawn);
-	}
-
-	private void changeGamePhaseFromTrading() {
-		if(playerModels.get(currentPlayer).getCardCount() >= 5) {
-			gameView.updateErrorLabel(messages.getString("mustTradeWarning"));
-			return;
-		}
-		gamePhase = GamePhase.PLACING;
-		startNextPhase();
-	}
-
-	private void changeGamePhaseFromPlacing() {
-		if(playerModels.get(currentPlayer).getNumberOfUnplacedArmies()!=0) {
-			gameView.updateErrorLabel(messages.getString("troopsNotPlaced"));
-		} else {
-			gamePhase = GamePhase.ATTACKING;
-			startNextPhase();
-		}
-	}
-
-	private void changeGamePhaseFromAttacking() {
-		if(getsCard) {
-			drawCard();
-		}
-		getsCard = false;
-		gamePhase = GamePhase.REINFORCING;
-		startNextPhase();
-	}
 
 	public void nextPhase() {
-		if(gamePhase == GamePhase.TRADING) {
-			changeGamePhaseFromTrading();
-		}else if(gamePhase == GamePhase.PLACING) {
-			changeGamePhaseFromPlacing();
-		}else if(gamePhase == GamePhase.ATTACKING) {
-			changeGamePhaseFromAttacking();
-		} else {
-			if(playerModels.get(currentPlayer).getNumberOfUnplacedArmies()!=0) {
-				gameView.updateErrorLabel(messages.getString("troopsNotPlaced"));
-			} else {
-				incrementCurrentPlayer();
-				gamePhase = GamePhase.TRADING;
-				startNextPhase();
-			}
-		}
+		phaseController.nextPhase();
+	}
+
+	public TerritoryMapController getTerritories() {
+		return this.territories;
+	}
+
+	public GameView getGameView() {
+		return this.gameView;
+	}
+
+	public void setGetsCard(boolean getsCard) {
+		this.getsCard = getsCard;
+	}
+
+	public boolean getGetsCard() {
+		return this.getsCard;
+	}
+
+	public void setGamePhase(GamePhase gamePhase) {
+		this.gamePhase = gamePhase;
+	}
+
+	public GamePhase getGamePhase() {
+		return this.gamePhase;
+	}
+
+	public ArrayList<PlayerModel> getPlayerModels() {
+		return this.playerModels;
+	}
+
+	public int getCurrentPlayer() {
+		return this.currentPlayer;
+	}
+
+	public void setTerritoryRemovedFrom(String territoryRemovedFrom) {
+		this.territoryRemovedFrom = territoryRemovedFrom;
+	}
+
+	public ResourceBundle getMessages() {
+		return this.messages;
 	}
 }
