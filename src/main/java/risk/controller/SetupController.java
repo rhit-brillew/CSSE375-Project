@@ -71,7 +71,7 @@ public class SetupController implements Runnable, GameViewObserver {
 		setupPhase();
 	}
 	
-	public int playerRolls() {
+	public ArrayList<Integer> playerRolls() {
 		int rollResult = die.roll();
 		startingRolls[currentPlayer] = rollResult;
 		incrementCurrentPlayer();
@@ -80,7 +80,10 @@ public class SetupController implements Runnable, GameViewObserver {
 		} else {
 			gameView.updateCurrentPlayerRollingLabel(currentPlayer + 1);
 		}
-		return rollResult;
+
+		ArrayList<Integer> totalRolls = new ArrayList<Integer>();
+		totalRolls.add(rollResult);
+		return totalRolls;
 	}
 
 	private void setupPhase() {
