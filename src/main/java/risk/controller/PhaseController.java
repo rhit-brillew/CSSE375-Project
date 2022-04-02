@@ -19,6 +19,7 @@ public class PhaseController {
         GameView gameView = turnController.getGameView();
         ArrayList<PlayerModel> playerModels = turnController.getPlayerModels();
         int currentPlayer = turnController.getCurrentPlayer();
+        gameView.updateGlobalGameState(currentPlayer, gamePhase.toString());
         if(gamePhase == TurnController.GamePhase.TRADING) {
             gameView.updateCurrentPlayerTrading(currentPlayer, playerModels.get(currentPlayer).getCardCount());
         }else if(gamePhase == TurnController.GamePhase.PLACING) {

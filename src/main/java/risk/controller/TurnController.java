@@ -129,24 +129,6 @@ public class TurnController implements GameViewObserver {
 		getsCard = true;
 		updateBattleResults();
 	}
-	
-	private void startNextPhase() {
-		if(gamePhase == GamePhase.TRADING) {
-			gameView.updateCurrentPlayerTrading(currentPlayer, playerModels.get(currentPlayer).getCardCount());
-		}else if(gamePhase == GamePhase.PLACING) {
-			int newTroops = calculateNumberOfArmies() 
-				+ playerModels.get(currentPlayer).getNumberOfUnplacedArmies();
-			playerModels.get(currentPlayer).setNumberOfUnplacedArmies(newTroops);
-			gameView.updateCurrentPlacingDisplay(currentPlayer,
-					playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-		}else if(gamePhase == GamePhase.ATTACKING) {
-			gameView.updateCurrentAttackingDisplay(currentPlayer);
-		}else {
-			territoryRemovedFrom = null;
-			gameView.updateCurrentReinforcingDisplay(currentPlayer,
-					playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
-		}
-	}
 
 	public void territoryPressed(String territoryName, boolean placingTroop) {
 		if(gamePhase == GamePhase.PLACING) {
@@ -245,7 +227,7 @@ public class TurnController implements GameViewObserver {
 	}
 
 	public void nextPhase() {
-		gameView.updateGlobalGameState(currentPlayer, gamePhase.toString()); //todo
+		gameView.updateGlobalGameState(currentPlayer, gamePhase.toString());
 		phaseController.nextPhase();
 	}
 
