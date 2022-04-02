@@ -44,6 +44,9 @@ public class GameView extends GameViewObservable {
 	private HashMap<String, JLabel> territoryArmyCounts;
 	private ArrayList<JLabel> diceRollsResults;
 
+	//TODO:
+	private JLabel globalGameStateLabel;
+
 	private ResourceBundle messages;
 	
 	private GameView(int numberOfPlayers, HashMap<String, Point> territories, int board) {
@@ -53,7 +56,7 @@ public class GameView extends GameViewObservable {
 		territoryArmyCounts = new HashMap<>();
 		this.board = board;
 		diceRollsResults = new ArrayList<>();
-		
+
 		initializeFrame();
 		initializeMapPane();
 		initializeGameBarPanel();
@@ -66,6 +69,10 @@ public class GameView extends GameViewObservable {
 		addMap();
 		addPlayerIcons();
 		addTerritories(territories);
+
+		//TODO:
+		initializeGlobalGameStateLabel();
+
 		frame.setVisible(true);
 	}
 
@@ -81,12 +88,6 @@ public class GameView extends GameViewObservable {
 		return numberOfPlayers;
 	}
 
-	public int getBoardNumber(){return this.board;}
-
-	public ResourceBundle getResourceBundle() {
-		return messages;
-	}
-	
 	private void initializeFrame() {
 		frame = new JFrame();
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -118,7 +119,25 @@ public class GameView extends GameViewObservable {
 		gameBarPanel.add(errorLabel);
 		gameBarPanel.add(gameState);
 	}
-	
+
+	//TODO:
+	private void initializeGlobalGameStateLabel(){
+		ImageIcon image = scaleImage(FRAME_WIDTH, 70, "src/main/resources/images/bottomGameBar.png");
+		JLabel label = new JLabel("", image, SwingConstants.CENTER);
+		label.setLayout(null);
+		label.setBounds(0, FRAME_HEIGHT-200, FRAME_WIDTH, 70);
+		mapPane.add(label, JLayeredPane.PALETTE_LAYER, 2);
+		label.setVisible(true);
+
+		globalGameStateLabel = new JLabel(messages.getString("setupLabel"));
+		globalGameStateLabel.setLayout(null);
+		globalGameStateLabel.setBounds(FRAME_WIDTH/2 - (int)globalGameStateLabel.getPreferredSize().getWidth()/2, FRAME_HEIGHT-230, FRAME_WIDTH/2, 100);
+		globalGameStateLabel.setFont(new Font(gameState.getFont().getName(), Font.PLAIN, 18));
+		globalGameStateLabel.setForeground(Color.WHITE);
+		mapPane.add(globalGameStateLabel, JLayeredPane.PALETTE_LAYER, 1);
+		globalGameStateLabel.setVisible(true);
+	}
+
 	private void initializeAttackCount() {
 		attackCount = new JSlider(1, 3);
 		attackCount.setBounds(1500, 50, 300, 50);
@@ -167,7 +186,7 @@ public class GameView extends GameViewObservable {
 			diceRollsResults.add(rollResult);
 			gameBarPanel.add(rollResult);
 		}
-		
+
 		diceLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -368,6 +387,7 @@ public class GameView extends GameViewObservable {
 	}
 	
 	public void updateCurrentAttackingDisplay(int player) {
+		diceLabel.setVisible(false);
 		nextPhaseLabel.setVisible(true);
 		gameState.setText(MessageFormat.format(messages.getString("attackingDisplayLabel"), player+1));
 		errorLabel.setText("");
@@ -455,10 +475,6 @@ public class GameView extends GameViewObservable {
 		});
 		gameBarPanel.add(submit);
 	}
-
-	public void closeFrame() {
-		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-	}
 	
 	private ImageIcon scaleImage(int width, int height, String imageLocation) {
 		ImageIcon imageIcon = new ImageIcon(imageLocation);
@@ -479,5 +495,10 @@ public class GameView extends GameViewObservable {
 	public void updateTerritoryArmyCountDisplay(String territoryName, int armyCount) {
 		JLabel territoryCountLabel = territoryArmyCounts.get(territoryName);
 		territoryCountLabel.setText(""+armyCount);
+	}
+
+	//TODO:
+	public void updateGlobalGameState(int currentPlayer, String state){
+		globalGameStateLabel.setText("Player " + (currentPlayer+1) + " is " + state);
 	}
 }

@@ -21,7 +21,7 @@ public class TurnController implements GameViewObserver {
 	ResourceBundle messages;
 	PhaseController phaseController;
 	CardsController cardsController;
-	
+
 	int attackerRollCount = 0;
 	int defenderRollCount = 0;
 	
@@ -109,6 +109,7 @@ public class TurnController implements GameViewObserver {
 		territories.getTerritoryByName(currentDefender).setOwner(playerColor);
 		if(hasWon()) {
 			gameView.showWinMessage(currentPlayer);
+			gameView.updateGlobalGameState(currentPlayer, "the winner!");
 			gameView.removeObserver(this);
 			return;
 		}
@@ -127,6 +128,24 @@ public class TurnController implements GameViewObserver {
 		gameView.updateTerritoryOwnerDisplay(currentDefender, playerColor);
 		getsCard = true;
 		updateBattleResults();
+	}
+	
+	private void startNextPhase() {
+		if(gamePhase == GamePhase.TRADING) {
+			gameView.updateCurrentPlayerTrading(currentPlayer, playerModels.get(currentPlayer).getCardCount());
+		}else if(gamePhase == GamePhase.PLACING) {
+			int newTroops = calculateNumberOfArmies() 
+				+ playerModels.get(currentPlayer).getNumberOfUnplacedArmies();
+			playerModels.get(currentPlayer).setNumberOfUnplacedArmies(newTroops);
+			gameView.updateCurrentPlacingDisplay(currentPlayer,
+					playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
+		}else if(gamePhase == GamePhase.ATTACKING) {
+			gameView.updateCurrentAttackingDisplay(currentPlayer);
+		}else {
+			territoryRemovedFrom = null;
+			gameView.updateCurrentReinforcingDisplay(currentPlayer,
+					playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
+		}
 	}
 
 	public void territoryPressed(String territoryName, boolean placingTroop) {
@@ -190,7 +209,7 @@ public class TurnController implements GameViewObserver {
 		currentAttacker = null;
 		currentDefender = null;
 	}
-	
+
 	public void determineNumberOfRolls(int selectedAttackerRollNumber) {
 		attackerRollCount = selectedAttackerRollNumber;
 		if(territories.getTerritoryByName(currentDefender).getNumberOfArmies() == 1) {
@@ -226,6 +245,7 @@ public class TurnController implements GameViewObserver {
 	}
 
 	public void nextPhase() {
+		gameView.updateGlobalGameState(currentPlayer, gamePhase.toString()); //todo
 		phaseController.nextPhase();
 	}
 
@@ -272,7 +292,7 @@ public class TurnController implements GameViewObserver {
 	public int getSetsTurnedIn() {
 		return setsTurnedIn;
 	}
-    
+
     public String getCurrentAttacker() {
         return this.currentAttacker;
     }
