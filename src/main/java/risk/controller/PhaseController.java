@@ -47,27 +47,8 @@ public class PhaseController {
     }
 
     private int numberOfArmiesFromContinent(){
-        int numberOfAdditionalArmies = 0;
         Color playerColor = turnController.getPlayerModels().get(turnController.getCurrentPlayer()).getColor();
-        if(turnController.getTerritories().ownsContinentAfrica(playerColor)){
-            numberOfAdditionalArmies += 3;
-        }
-        if(turnController.getTerritories().ownsContinentAsia(playerColor)){
-            numberOfAdditionalArmies += 7;
-        }
-        if(turnController.getTerritories().ownsContinentAustralia(playerColor)){
-            numberOfAdditionalArmies += 2;
-        }
-        if(turnController.getTerritories().ownsContinentEurope(playerColor)){
-            numberOfAdditionalArmies += 5;
-        }
-        if(turnController.getTerritories().ownsContinentNorthAmerica(playerColor)){
-            numberOfAdditionalArmies += 5;
-        }
-        if(turnController.getTerritories().ownsContinentSouthAmerica(playerColor)){
-            numberOfAdditionalArmies += 2;
-        }
-        return numberOfAdditionalArmies;
+        return this.turnController.territories.numberTroopsForOwningContinent(playerColor);
     }
 
     int calculateNumberOfArmies(){
