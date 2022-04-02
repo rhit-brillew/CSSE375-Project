@@ -187,6 +187,21 @@ public class TestTerritoryMapController {
 	}
 
 	@Test
+	public void testSetTerritoryOwnerByName(){
+		TerritoryMapController territoryMapController = createAllTerritoriesFromXML();
+		territoryMapController.setTerritoryOwnerByName("China", Color.RED);
+		assertEquals(Color.RED, territoryMapController.getTerritoryByName("China").getOwner());
+	}
+
+	@Test
+	public void testChangeTerritoryArmyAmountBy(){
+		TerritoryMapController territoryMapController = createAllTerritoriesFromXML();
+		int armyAmount = territoryMapController.getTerritoryByName("China").getNumberOfArmies();
+		territoryMapController.changeTerritoryArmyAmountBy("China", 1);
+		assertEquals(armyAmount+1, territoryMapController.getTerritoryByName("China").getNumberOfArmies());
+	}
+
+	@Test
 	public void testGetTerritoryByNameSize1() {
 		testGetTerritoryByNameWithNTerritories(1);
 	}
