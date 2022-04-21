@@ -7,7 +7,6 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
@@ -39,24 +38,17 @@ public class GameView extends GameViewObservable {
 	private JSlider troopCount;
 	private BufferedImage territoryImage;
 	private int territorySize = 30;
-	private int board;
 	private HashMap<String, JLabel> territoryCircles;
 	private HashMap<String, JLabel> territoryArmyCounts;
-	private ArrayList<JLabel> diceRollsResults;
-
-	//TODO:
-	private JLabel globalGameStateLabel;
 
 	private ResourceBundle messages;
 	
-	private GameView(int numberOfPlayers, HashMap<String, Point> territories, int board) {
+	private GameView(int numberOfPlayers, HashMap<String, Point> territories) {
 		this.numberOfPlayers = numberOfPlayers;
 		this.messages = StaticResourceBundle.getResourceBundle();
 		territoryCircles = new HashMap<>();
 		territoryArmyCounts = new HashMap<>();
-		this.board = board;
-		diceRollsResults = new ArrayList<>();
-
+		
 		initializeFrame();
 		initializeMapPane();
 		initializeGameBarPanel();
@@ -69,15 +61,11 @@ public class GameView extends GameViewObservable {
 		addMap();
 		addPlayerIcons();
 		addTerritories(territories);
-
-		//TODO:
-		initializeGlobalGameStateLabel();
-
 		frame.setVisible(true);
 	}
 
-	public static void create(int numberOfPlayers, HashMap<String, Point> territories, int board) {
-		gameView = new GameView(numberOfPlayers, territories, board);
+	public static void create(int numberOfPlayers, HashMap<String, Point> territories) {
+		gameView = new GameView(numberOfPlayers, territories);
 	}
 
 	public static GameView getGameView() {
@@ -88,6 +76,10 @@ public class GameView extends GameViewObservable {
 		return numberOfPlayers;
 	}
 
+	public ResourceBundle getResourceBundle() {
+		return messages;
+	}
+	
 	private void initializeFrame() {
 		frame = new JFrame();
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -119,25 +111,7 @@ public class GameView extends GameViewObservable {
 		gameBarPanel.add(errorLabel);
 		gameBarPanel.add(gameState);
 	}
-
-	//TODO:
-	private void initializeGlobalGameStateLabel(){
-		ImageIcon image = scaleImage(FRAME_WIDTH, 70, "src/main/resources/images/bottomGameBar.png");
-		JLabel label = new JLabel("", image, SwingConstants.CENTER);
-		label.setLayout(null);
-		label.setBounds(0, FRAME_HEIGHT-200, FRAME_WIDTH, 70);
-		mapPane.add(label, JLayeredPane.PALETTE_LAYER, 2);
-		label.setVisible(true);
-
-		globalGameStateLabel = new JLabel(messages.getString("setupLabel"));
-		globalGameStateLabel.setLayout(null);
-		globalGameStateLabel.setBounds(FRAME_WIDTH/2 - (int)globalGameStateLabel.getPreferredSize().getWidth()/2, FRAME_HEIGHT-230, FRAME_WIDTH/2, 100);
-		globalGameStateLabel.setFont(new Font(gameState.getFont().getName(), Font.PLAIN, 18));
-		globalGameStateLabel.setForeground(Color.WHITE);
-		mapPane.add(globalGameStateLabel, JLayeredPane.PALETTE_LAYER, 1);
-		globalGameStateLabel.setVisible(true);
-	}
-
+	
 	private void initializeAttackCount() {
 		attackCount = new JSlider(1, 3);
 		attackCount.setBounds(1500, 50, 300, 50);
@@ -174,31 +148,15 @@ public class GameView extends GameViewObservable {
 		ImageIcon image = scaleImage(100, 100, "src/main/resources/images/dice.png");
 		diceLabel = new JLabel("", image, SwingConstants.RIGHT);
 		diceLabel.setLayout(null);
-		diceLabel.setBounds(1400, 0, 100, GAME_BAR_PANEL_HEIGHT);
+		diceLabel.setBounds(1400, 0, 200, GAME_BAR_PANEL_HEIGHT);
 		diceLabel.setForeground(Color.white);
-
-		for(int i = 0; i < 3; i++){
-			JLabel rollResult = new JLabel("", image, SwingConstants.RIGHT);
-			rollResult.setLayout(null);
-			rollResult.setBounds(1500 + i * 100, 0, 100, GAME_BAR_PANEL_HEIGHT);
-			rollResult.setForeground(Color.white);
-			rollResult.setVisible(false);
-			diceRollsResults.add(rollResult);
-			gameBarPanel.add(rollResult);
-		}
-
+		
 		diceLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				for(GameViewObserver observer : observers) {
-					ArrayList<Integer> result = observer.playerRolls();
-					for(JLabel rollResult : diceRollsResults) {
-						rollResult.setVisible(false);
-					}
-					for(int i = 0; i < result.size(); i++){
-						diceRollsResults.get(i).setIcon(scaleImage(100, 100, "src/main/resources/images/diceside" + result.get(i) + ".png"));
-						diceRollsResults.get(i).setVisible(true);
-					}
+					int result = observer.playerRolls();
+					diceLabel.setText(messages.getString("startOfDiceLabel") + result);
 				}
 			}
 		});
@@ -251,8 +209,8 @@ public class GameView extends GameViewObservable {
 	}
 	
 	private void addMap() {
-		ImageIcon image = scaleImage(FRAME_WIDTH, FRAME_HEIGHT - GAME_BAR_PANEL_HEIGHT,
-				"src/main/resources/board"+ this.board + "/" + messages.getString("gameBoard"));
+		ImageIcon image = scaleImage(FRAME_WIDTH, FRAME_HEIGHT - GAME_BAR_PANEL_HEIGHT, 
+					messages.getString("gameBoardLocation"));
 		JLabel backgroundLabel = new JLabel(image);
 		
 		backgroundLabel.setLayout(null);
@@ -358,9 +316,6 @@ public class GameView extends GameViewObservable {
 	
 	public void updateCurrentPlayerClaimingLabel(int player) {
 		gameState.setText(MessageFormat.format(messages.getString("playerClaimingLabel"), player));
-		for(JLabel rollResult : diceRollsResults) {
-			rollResult.setVisible(false);
-		}
 		diceLabel.setVisible(false);
 	}
 	
@@ -375,9 +330,6 @@ public class GameView extends GameViewObservable {
 		nextPhaseLabel.setVisible(true);
 		cardLabel.setVisible(false);
 		diceLabel.setVisible(false);
-		for(JLabel rollResult : diceRollsResults) {
-			rollResult.setVisible(false);
-		}
 		gameState.setText(MessageFormat.format(messages.getString("placingDisplayLabel"), player+1, armyCount));
 		errorLabel.setText("");
 	}
@@ -394,10 +346,6 @@ public class GameView extends GameViewObservable {
 	}
 	
 	public void updateCurrentReinforcingDisplay(int player, int availableCount) {
-		diceLabel.setVisible(false);
-		for(JLabel rollResult : diceRollsResults) {
-			rollResult.setVisible(false);
-		}
 		gameState.setText(MessageFormat.format(messages.getString("reinforcingDisplayLabel"), player+1, availableCount));
 		errorLabel.setText("");
 	}
@@ -475,6 +423,10 @@ public class GameView extends GameViewObservable {
 		});
 		gameBarPanel.add(submit);
 	}
+
+	public void closeFrame() {
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+	}
 	
 	private ImageIcon scaleImage(int width, int height, String imageLocation) {
 		ImageIcon imageIcon = new ImageIcon(imageLocation);
@@ -495,10 +447,5 @@ public class GameView extends GameViewObservable {
 	public void updateTerritoryArmyCountDisplay(String territoryName, int armyCount) {
 		JLabel territoryCountLabel = territoryArmyCounts.get(territoryName);
 		territoryCountLabel.setText(""+armyCount);
-	}
-
-	//TODO:
-	public void updateGlobalGameState(int currentPlayer, String state){
-		globalGameStateLabel.setText("Player " + (currentPlayer+1) + " is " + state);
 	}
 }

@@ -17,19 +17,14 @@ public class StartingOptionsView extends StartingOptionsObservable {
 	private int selectedLocalizationIndex = 0;
 	private static final int numberOfLocalizationButtons = 2;
 
-	private JButton[] boardButtons;
-	private int selectedBoardIndex = 0;
-	private static final int numberOfBoardButtons = 2;
-
 	private static final Color selectedColor = new Color(69, 131, 196);
 
 	public StartingOptionsView() {
 		JFrame frame = new JFrame("Initialization Settings");
-		frame.setSize(300, 550);
+		frame.setSize(300, 475);
 		frame.setVisible(true);
 		addPlayerButtonsPanelToFrame(frame);
 		addLocalizationButtonsPanelToFrame(frame);
-		addBoardButtonsPanelToFrame(frame);
 		addStartGamePanelToFrame(frame);
 		frame.validate();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -146,65 +141,10 @@ public class StartingOptionsView extends StartingOptionsObservable {
 		}
 	}
 
-	private void addBoardButtonsPanelToFrame(JFrame frame) {
-		JPanel boardButtonsPanel = new JPanel();
-		boardButtonsPanel.setLayout(new GridBagLayout());
-		boardButtonsPanel.setBounds(new Rectangle(0, 200, 175, 100));
-
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.gridheight = 1;
-		c.gridwidth = numberOfBoardButtons;
-		c.anchor = GridBagConstraints.LINE_START;
-		JLabel boardLabel = new JLabel("Board Option");
-		boardButtonsPanel.add(boardLabel, c);
-
-		addBoardButtonsToPanel(boardButtonsPanel);
-		correctlyHighlightSelectedBoardButton();
-
-		frame.add(boardButtonsPanel);
-	}
-
-	private void addBoardButtonsToPanel(JPanel panel) {
-		boardButtons = new JButton[numberOfBoardButtons];
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridy = 1;
-		c.gridheight = 1;
-		c.gridwidth = 1;
-		for(int i = 0; i < numberOfBoardButtons; i++) {
-			c.gridx = i;
-			JButton button;
-			button = new JButton("Board"+(i+1));
-			button.setFocusable(false);
-			int finalI = i;
-			button.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					selectedBoardIndex = finalI;
-					correctlyHighlightSelectedBoardButton();
-				}
-			});
-			boardButtons[i] = button;
-			panel.add(button, c);
-		}
-	}
-
-	private void correctlyHighlightSelectedBoardButton() {
-		for(int i = 0; i < numberOfBoardButtons; i++) {
-			if(i == selectedBoardIndex) {
-				boardButtons[i].setBackground(selectedColor);
-			} else {
-				boardButtons[i].setBackground(Color.WHITE);
-			}
-		}
-	}
-
 	private void addStartGamePanelToFrame(JFrame frame) {
 		JPanel startGamePanel = new JPanel();
 		startGamePanel.setLayout(new GridBagLayout());
-		startGamePanel.setBounds(new Rectangle(0, 0, 175, 100));
-
+		startGamePanel.setBounds(new Rectangle(0, 0, 175, 200));
 
 		JButton button = new JButton("Start Game");
 		button.setFocusable(false);
@@ -213,17 +153,16 @@ public class StartingOptionsView extends StartingOptionsObservable {
 			public void actionPerformed(ActionEvent e) {
 				notifyObserversOfPlayerCount();
 				notifyObserversOfLocale();
-				notifyObserversOfBoard();
 				notifyObserversToStartGame();
 			}
 		});
-
+		
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridheight = 1;
 		c.gridwidth = 1;
-
+		c.anchor = GridBagConstraints.LAST_LINE_START;
 		startGamePanel.add(button, c);
 		frame.add(startGamePanel);
 	}
@@ -243,12 +182,6 @@ public class StartingOptionsView extends StartingOptionsObservable {
 		}
 		for(StartingOptionsObserver observer : observers) {
 			observer.setLocale(locale);
-		}
-	}
-
-	void notifyObserversOfBoard(){
-		for(StartingOptionsObserver observer : observers){
-			observer.setBoard(selectedBoardIndex+1);
 		}
 	}
 

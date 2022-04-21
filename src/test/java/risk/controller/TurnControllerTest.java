@@ -5,7 +5,6 @@ import static org.junit.Assert.fail;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -276,18 +275,6 @@ public class TurnControllerTest {
 				String.class, String.class).withArgs("India", "Artillery").createMock());
 
 		return cards;
-	}
-
-	public void createContinentMap(){
-		HashMap<String, Integer> map = new HashMap<>();
-		map.put("North America", 5);
-		map.put("South America", 2);
-		map.put("Asia", 7);
-		map.put("Africa", 3);
-		map.put("Europe", 5);
-		map.put("Australia",2);
-
-		this.mockedTerritories.continents = map;
 	}
 
 	@Test
@@ -1209,7 +1196,6 @@ public class TurnControllerTest {
 	@Test
 	public void testCalculateNumberOfArmiesLessThan9Territories(){
 		TurnController turnController = new TurnController(mockedGameView, mockedTerritories, playerModels, 0, mockedDie);
-		createContinentMap();
 		turnController.playerModels.get(0).setNumberOfUnplacedArmies(7);
 		int actual = turnController.calculateNumberOfArmies();
 		assertEquals(3, actual);
@@ -1218,7 +1204,7 @@ public class TurnControllerTest {
 	@Test
 	public void testCalculateNumberOfArmiesMoreThan9DivisibleBy3(){
 		TurnController turnController = new TurnController(mockedGameView, mockedTerritories, playerModels, 0, mockedDie);
-		createContinentMap();
+//		turnController.playerModels.get(0).setNumberOfUnplacedArmies(12);
 		for(int i = 0; i < 12; i++){
 			mockedTerritories.allTerritories.get(i).setOwner(Color.RED);
 		}
@@ -1230,7 +1216,6 @@ public class TurnControllerTest {
 	public void testCalculateNumberOfArmiesMoreThan9NotDivisibleBy3(){
 		TurnController turnController = new TurnController(mockedGameView, mockedTerritories, playerModels, 0, mockedDie);
 		//turnController.playerModels.get(0).setNumberOfUnplacedArmies(10);
-		createContinentMap();
 		for(int i = 0; i < 10; i++){
 			mockedTerritories.allTerritories.get(i).setOwner(Color.RED);
 		}
