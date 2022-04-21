@@ -224,7 +224,7 @@ public class SetupController implements Runnable, GameViewObserver {
 
 	private void claimTerritory(String territoryName) {
 		Color playerColor = playerModels.get(currentPlayer).getColor();
-		territories.getTerritoryByName(territoryName).setOwner(playerColor);
+		territories.setTerritoryOwnerByName(territoryName, playerColor);
 		gameView.updateTerritoryOwnerDisplay(territoryName, playerColor);
 		addOneArmyToTerritory(territoryName);
 	}
@@ -235,7 +235,7 @@ public class SetupController implements Runnable, GameViewObserver {
 		} else {
 			playerModels.get(currentPlayer).placeArmy();
 		}
-		territories.getTerritoryByName(territoryName).changeArmyAmountBy(1);
+		territories.changeTerritoryArmyAmountBy(territoryName, 1);
 		gameView.updateTerritoryArmyCountDisplay(territoryName,
 				territories.getTerritoryByName(territoryName).getNumberOfArmies());
 	}
