@@ -3,10 +3,8 @@ package risk.controller;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import risk.model.PlayerModel;
-import risk.model.SixSidedDie;
-import risk.model.StaticResourceBundle;
-import risk.model.TerritoryModel;
+
+import risk.model.*;
 import risk.view.GameView;
 
 public class SetupController implements Runnable, GameViewObserver {
@@ -73,7 +71,7 @@ public class SetupController implements Runnable, GameViewObserver {
 		setupPhase();
 	}
 	
-	public int playerRolls() {
+	public ArrayList<Integer> playerRolls() {
 		int rollResult = die.roll();
 		startingRolls[currentPlayer] = rollResult;
 		incrementCurrentPlayer();
@@ -82,7 +80,10 @@ public class SetupController implements Runnable, GameViewObserver {
 		} else {
 			gameView.updateCurrentPlayerRollingLabel(currentPlayer + 1);
 		}
-		return rollResult;
+
+		ArrayList<Integer> totalRolls = new ArrayList<Integer>();
+		totalRolls.add(rollResult);
+		return totalRolls;
 	}
 
 	private void setupPhase() {
@@ -104,8 +105,9 @@ public class SetupController implements Runnable, GameViewObserver {
 	private void placeArmies(){
 		for(int i = 0; i < playerModels.size(); i++){
 			currentPlayer = i;
-			for(int j = 0; j < playerModels.get(i).getCardCount(); j++){
-				claimTerritory(playerModels.get(i).getCardAtIndex(j).getTerritoryName());
+			CardManager cards = playerModels.get(i).getCards();
+			for(Card card : cards.getTotalCards()){
+				claimTerritory(card.getTerritoryName());
 			}
 		}
 		currentPlayer = 0;
@@ -182,32 +184,48 @@ public class SetupController implements Runnable, GameViewObserver {
 	private void allTerritoriesClaimedStillUnplacedArmies(String territoryName, TerritoryModel territory) {
 		if(territory.getOwner() == playerModels.get(currentPlayer).getColor()){
 			if(isTwoPlayerGame()){
-				if(twoPlayerGameArmiesPlacedOnTurn<1) {
-					addOneArmyToTerritory(territoryName);
-					twoPlayerGameArmiesPlacedOnTurn++;
-					gameView.updateCurrentPlacingDisplay(currentPlayer,
-							playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
+				if(twoPlayerGameArmiesPlacedOnTurn < 1) {
+					twoPlayerAddFirstArmy(territoryName);
 				}else if(twoPlayerGameArmiesPlacedOnTurn == 1){
-					addOneArmyToTerritory(territoryName);
-					twoPlayerGameArmiesPlacedOnTurn++;
-					gameView.updatePlaceNeutralArmy();
+					twoPlayerAddArmy(territoryName);
 				}else {
 					gameView.updateErrorLabel(messages.getString("neutralWarning"));
 				}
 			} else {
-				addOneArmyToTerritory(territoryName);
-				incrementCurrentPlayer();
-				gameView.updateCurrentPlacingDisplay(currentPlayer,
-						playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
+				addArmy(territoryName);
 			}
 		} else if (isTwoPlayerGame() && territory.getOwner().equals(neutralPlayer.getColor())
 				&& twoPlayerGameArmiesPlacedOnTurn == 2){
-			addOneArmyToTerritory(territoryName);
-			twoPlayerGameArmiesPlacedOnTurn = 0;
-			incrementCurrentPlayer();
-			gameView.updateCurrentPlacingDisplay(currentPlayer,
-					playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
+			twoPlayerAddArmyToNeutral(territoryName);
 		}
+	}
+
+	private void twoPlayerAddFirstArmy(String territoryName) {
+		addOneArmyToTerritory(territoryName);
+		twoPlayerGameArmiesPlacedOnTurn++;
+		gameView.updateCurrentPlacingDisplay(currentPlayer,
+				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
+	}
+
+	private void twoPlayerAddArmy(String territoryName) {
+		addOneArmyToTerritory(territoryName);
+		twoPlayerGameArmiesPlacedOnTurn++;
+		gameView.updatePlaceNeutralArmy();
+	}
+
+	private void addArmy(String territoryName) {
+		addOneArmyToTerritory(territoryName);
+		incrementCurrentPlayer();
+		gameView.updateCurrentPlacingDisplay(currentPlayer,
+				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
+	}
+
+	private void twoPlayerAddArmyToNeutral(String territoryName) {
+		addOneArmyToTerritory(territoryName);
+		twoPlayerGameArmiesPlacedOnTurn = 0;
+		incrementCurrentPlayer();
+		gameView.updateCurrentPlacingDisplay(currentPlayer,
+				playerModels.get(currentPlayer).getNumberOfUnplacedArmies());
 	}
 
 	private boolean isTwoPlayerGame() {
@@ -224,7 +242,7 @@ public class SetupController implements Runnable, GameViewObserver {
 
 	private void claimTerritory(String territoryName) {
 		Color playerColor = playerModels.get(currentPlayer).getColor();
-		territories.getTerritoryByName(territoryName).setOwner(playerColor);
+		territories.setTerritoryOwnerByName(territoryName, playerColor);
 		gameView.updateTerritoryOwnerDisplay(territoryName, playerColor);
 		addOneArmyToTerritory(territoryName);
 	}
@@ -235,7 +253,7 @@ public class SetupController implements Runnable, GameViewObserver {
 		} else {
 			playerModels.get(currentPlayer).placeArmy();
 		}
-		territories.getTerritoryByName(territoryName).changeArmyAmountBy(1);
+		territories.changeTerritoryArmyAmountBy(territoryName, 1);
 		gameView.updateTerritoryArmyCountDisplay(territoryName,
 				territories.getTerritoryByName(territoryName).getNumberOfArmies());
 	}

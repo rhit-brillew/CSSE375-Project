@@ -1,11 +1,13 @@
 package risk.controller;
 
+import java.util.ArrayList;
+
 public interface GameViewObserver {
 	void territoryPressed(String territoryName, boolean placingTroop);
 	
 	void tradeInCards();
 
-	int playerRolls();
+	ArrayList<Integer> playerRolls();
 	
 	void nextPhase();
 	
