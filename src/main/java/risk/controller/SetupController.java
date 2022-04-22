@@ -90,8 +90,15 @@ public class SetupController implements Runnable, GameViewObserver {
 		if(isTwoPlayerGame()) {
 			twoPlayerSetupPhase();
 		}
+		addWildCardsToController();
 		gameState=GameState.ROLLING;
 		gameView.updateCurrentPlayerRollingLabel(1);
+	}
+
+	private void addWildCardsToController() {
+		for(int i = 0; i < 2; i++){
+			territories.addCard(new Card("", "Wild"));
+		}
 	}
 
 	void twoPlayerSetupPhase() {
@@ -116,7 +123,7 @@ public class SetupController implements Runnable, GameViewObserver {
 	private void dealCards(){
 		for(int i = 0; i < playerModels.size(); i++){
 			int start = i * (territories.deck.size() / 3);
-			for(int j = start; j < start + territories.deck.size() / 3; j++){
+			for(int j = start; j < (start + territories.deck.size() / 3); j++){
 				playerModels.get(i).addCard(territories.deck.get(j));
 			}
 		}

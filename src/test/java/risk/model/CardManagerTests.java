@@ -10,7 +10,7 @@ public class CardManagerTests {
     public void testDetermineCardToRemove(){
         try {
             CardManager manager = new CardManager();
-            ArrayList<Card> actual = manager.determineCardToRemove();
+            manager.determineCardToRemove();
         } catch(IllegalArgumentException ex){
             Assert.assertTrue(true);
         }
@@ -23,7 +23,7 @@ public class CardManagerTests {
             manager.add(new Card("", "Wild"));
             manager.add(new Card("", "Wild"));
             manager.add(new Card("", "Wild"));
-            ArrayList<Card> actual = manager.determineCardToRemove();
+            manager.determineCardToRemove();
         } catch(IllegalArgumentException ex){
             Assert.assertTrue(true);
         }
