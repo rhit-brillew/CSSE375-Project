@@ -185,6 +185,7 @@ public class TwoPlayerFeatureTest {
 		setupController.territories.getTerritoryByName("India").setOwner(Color.RED);
 		setupController.territoryPressed("Siberia", true);
 		setupController.territoryPressed("India", true);
+		setupController.territoryPressed("China", true);
 		Assert.assertEquals(33, setupController.playerModels.get(0).getNumberOfUnplacedArmies());
 		EasyMock.verify(gameView);
 	}

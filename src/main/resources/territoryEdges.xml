@@ -50,7 +50,6 @@
 	<edge t1="Egypt" t2="East Africa" />
 	<edge t1="East Africa" t2="Middle East" />
 	<edge t1="East Africa" t2="Madagascar" />
-	<edge t1="South Africa" t2="Madagascar"/>
 	<edge t1="Central Africa" t2="East Africa" />
 	<edge t1="Central Africa" t2="South Africa" />
 	<edge t1="Ural" t2="Siberia" />
