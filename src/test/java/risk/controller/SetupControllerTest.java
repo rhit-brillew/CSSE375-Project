@@ -222,17 +222,21 @@ public class SetupControllerTest {
 	public void testTerritoryUnclaimedTerritoriesPressedUnclaimed(){
 		GameView gameViewMock = EasyMock.strictMock(GameView.class);
 		EasyMock.expect(gameViewMock.getNumberOfPlayers()).andReturn(3);
-		gameViewMock.updateTerritoryOwnerDisplay("China", ColorFactory.createColor("Player1"));
-		gameViewMock.updateTerritoryArmyCountDisplay("China", 1);
-		gameViewMock.updateCurrentPlayerClaimingLabel(2);
 
 		TerritoryModel territoryModelMock = createTerritoryToBeClaimedByPlayer(1);
 
 		TerritoryMapController territoryMapControllerMock = EasyMock.strictMock(TerritoryMapController.class);
 		EasyMock.expect(territoryMapControllerMock.getTerritoryByName("China")).andReturn(territoryModelMock);
 		EasyMock.expect(territoryMapControllerMock.areThereUnclaimedTerritories()).andReturn(true);
-		EasyMock.expect(territoryMapControllerMock.getTerritoryByName("China")).andReturn(territoryModelMock).times(3);
+		territoryMapControllerMock.setTerritoryOwnerByName("China", ColorFactory.createColor("Player1"));
+		gameViewMock.updateTerritoryOwnerDisplay("China", ColorFactory.createColor("Player1"));
+		territoryMapControllerMock.changeTerritoryArmyAmountBy("China", 1);
+		EasyMock.expect(territoryMapControllerMock.getTerritoryByName("China")).andReturn(territoryModelMock);
+		EasyMock.expect(territoryModelMock.getNumberOfArmies()).andReturn(2);
+		gameViewMock.updateTerritoryArmyCountDisplay("China", 2);
 		EasyMock.expect(territoryMapControllerMock.areThereUnclaimedTerritories()).andReturn(true);
+		gameViewMock.updateCurrentPlayerClaimingLabel(2);
+
 
 		EasyMock.replay(gameViewMock, territoryMapControllerMock, territoryModelMock);
 		SetupController controller = new SetupController(gameViewMock, null, territoryMapControllerMock);
@@ -248,9 +252,6 @@ public class SetupControllerTest {
 	private TerritoryModel createTerritoryToBeClaimedByPlayer(int player) {
 		TerritoryModel territoryModelMock = EasyMock.strictMock(TerritoryModel.class);
 		EasyMock.expect(territoryModelMock.isOwned()).andReturn(false);
-		territoryModelMock.setOwner(ColorFactory.createColor("Player" + player));
-		territoryModelMock.changeArmyAmountBy(1);
-		EasyMock.expect(territoryModelMock.getNumberOfArmies()).andReturn(1);
 		return territoryModelMock;
 	}
 
@@ -281,18 +282,18 @@ public class SetupControllerTest {
 	public void testTerritoryPressedClaimedWithNoUnclaimedTerritories(){
 		GameView gameViewMock = EasyMock.strictMock(GameView.class);
 		EasyMock.expect(gameViewMock.getNumberOfPlayers()).andReturn(3);
-		gameViewMock.updateTerritoryArmyCountDisplay("China", 2);
-		gameViewMock.updateCurrentPlacingDisplay(1, 35);
 
 		TerritoryModel territoryModelMock = EasyMock.strictMock(TerritoryModel.class);
-		EasyMock.expect(territoryModelMock.getOwner()).andReturn(ColorFactory.createColor("Player1"));
-		territoryModelMock.changeArmyAmountBy(1);
-		EasyMock.expect(territoryModelMock.getNumberOfArmies()).andReturn(2);
 
 		TerritoryMapController territoryMapControllerMock = EasyMock.strictMock(TerritoryMapController.class);
 		EasyMock.expect(territoryMapControllerMock.getTerritoryByName("China")).andReturn(territoryModelMock);
 		EasyMock.expect(territoryMapControllerMock.areThereUnclaimedTerritories()).andReturn(false);
-		EasyMock.expect(territoryMapControllerMock.getTerritoryByName("China")).andReturn(territoryModelMock).times(2);
+		EasyMock.expect(territoryModelMock.getOwner()).andReturn(ColorFactory.createColor("Player1"));
+		territoryMapControllerMock.changeTerritoryArmyAmountBy("China", 1);
+		EasyMock.expect(territoryMapControllerMock.getTerritoryByName("China")).andReturn(territoryModelMock);
+		EasyMock.expect(territoryModelMock.getNumberOfArmies()).andReturn(2);
+		gameViewMock.updateTerritoryArmyCountDisplay("China", 2);
+		gameViewMock.updateCurrentPlacingDisplay(1, 35);
 
 		EasyMock.replay(gameViewMock, territoryMapControllerMock, territoryModelMock);
 		SetupController controller = new SetupController(gameViewMock, null, territoryMapControllerMock);
