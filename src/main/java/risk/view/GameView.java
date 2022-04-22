@@ -445,7 +445,11 @@ public class GameView extends GameViewObservable {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				for(GameViewObserver observer : observers) {
-					observer.moveTroops(slider.getValue());
+					if(slider.equals(troopCount)){
+						observer.moveTroops(slider.getValue());
+					}else{
+						observer.determineNumberOfRolls(slider.getValue());
+					}
 					slider.setVisible(false);
 					submit.setVisible(false);
 				}
