@@ -70,7 +70,6 @@ public class GameView extends GameViewObservable {
 		addPlayerIcons();
 		addTerritories(territories);
 
-		//TODO:
 		initializeGlobalGameStateLabel();
 
 		frame.setVisible(true);
@@ -120,7 +119,6 @@ public class GameView extends GameViewObservable {
 		gameBarPanel.add(gameState);
 	}
 
-	//TODO:
 	private void initializeGlobalGameStateLabel(){
 		ImageIcon image = scaleImage(FRAME_WIDTH, 70, "src/main/resources/images/bottomGameBar.png");
 		JLabel label = new JLabel("", image, SwingConstants.CENTER);
@@ -139,14 +137,8 @@ public class GameView extends GameViewObservable {
 	}
 
 	private void initializeAttackCount() {
-		attackCount = new JSlider(1, 3);
-		attackCount.setBounds(1500, 50, 300, 50);
-		attackCount.setMajorTickSpacing(1);
-		attackCount.setPaintTicks(true);
-		attackCount.setBackground(Color.black);
-		attackCount.setForeground(Color.white);
-		attackCount.setPaintLabels(true);
-		
+		attackCount = initializeSliderCount();
+
 		submit = new JButton(messages.getString("attackLabel"));
 		submit.setBounds(1700, 0, 100, 50);
 		submit.setLayout(null);
@@ -158,16 +150,21 @@ public class GameView extends GameViewObservable {
 	}
 	
 	private void initializeTroopCount() {
-		troopCount = new JSlider(1, 3);
-		troopCount.setBounds(1500, 50, 300, 50);
-		troopCount.setMajorTickSpacing(1);
-		troopCount.setPaintTicks(true);
-		troopCount.setBackground(Color.black);
-		troopCount.setForeground(Color.white);
-		troopCount.setPaintLabels(true);
-		
+		troopCount = initializeSliderCount();
+
 		gameBarPanel.add(troopCount);
 		troopCount.setVisible(false);
+	}
+
+	private JSlider initializeSliderCount(){
+		JSlider slider = new JSlider(1, 3);
+		slider.setBounds(1500, 50, 300, 50);
+		slider.setMajorTickSpacing(1);
+		slider.setPaintTicks(true);
+		slider.setBackground(Color.black);
+		slider.setForeground(Color.white);
+		slider.setPaintLabels(true);
+		return slider;
 	}
 	
 	private void initializeDiceLabel() {
@@ -426,39 +423,20 @@ public class GameView extends GameViewObservable {
 	public void showWinMessage(int currentPlayer){
 		gameState.setText(MessageFormat.format(messages.getString("playerWonMessage"), currentPlayer));
 	}
-	
-	public void showAttackCount(int max) {
-		nextPhaseLabel.setVisible(false);
-		attackCount.setMaximum(max);
-		attackCount.setVisible(true);
-		
-		
-		submit.setVisible(true);
-		
-		MouseListener[] listeners = submit.getMouseListeners();
-		if(listeners.length>0) {
-			submit.removeMouseListener(listeners[0]);
-		}
-		submit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				for(GameViewObserver observer : observers) {
-					observer.determineNumberOfRolls(attackCount.getValue());
-					attackCount.setVisible(false);
-					submit.setVisible(false);
-				}
-			}
-		});
-		gameBarPanel.add(submit);
+
+	public void showAttackCount(int max){
+		this.showSliderCount(nextPhaseLabel,attackCount,max);
 	}
-	
-	public void showTroopMovementCount(int maxTroops) {
-		attackCount.setVisible(false);
-		troopCount.setMaximum(maxTroops);
-		troopCount.setVisible(true);
-		
+
+	public void showTroopMovementCount(int maxTroops){
+		this.showSliderCount(attackCount,troopCount,maxTroops);
+	}
+
+	public void showSliderCount(Component c, JSlider slider, int max){
+		c.setVisible(false);
+		slider.setMaximum(max);
+		slider.setVisible(true);
 		submit.setVisible(true);
-		
 		MouseListener[] listeners = submit.getMouseListeners();
 		if(listeners.length>0) {
 			submit.removeMouseListener(listeners[0]);
@@ -467,8 +445,8 @@ public class GameView extends GameViewObservable {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				for(GameViewObserver observer : observers) {
-					observer.moveTroops(troopCount.getValue());
-					troopCount.setVisible(false);
+					observer.moveTroops(slider.getValue());
+					slider.setVisible(false);
 					submit.setVisible(false);
 				}
 			}
