@@ -235,6 +235,26 @@ public class TurnController implements GameViewObserver {
 		return this.territories;
 	}
 
+	public Color getTerritoryOwner(String name){
+		return this.territories.getTerritoryByName(name).getOwner();
+	}
+
+	public Color getCurrentPlayerColor(){
+		return this.playerModels.get(currentPlayer).getColor();
+	}
+
+	public void updateErrorLabel(String message){
+		this.gameView.updateErrorLabel(messages.getString(message));
+	}
+
+	public int getAttackingTerritoryArmyCount() {
+		return territories.getTerritoryByName(currentAttacker).getNumberOfArmies();
+	}
+
+	public boolean isAttackerAdjacent(String territoryName) {
+		return territories.areTerritoriesAdjacent(currentAttacker, territoryName);
+	}
+
 	public GameView getGameView() {
 		return this.gameView;
 	}
