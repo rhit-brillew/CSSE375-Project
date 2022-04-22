@@ -200,9 +200,9 @@ public class TwoPlayerFeatureTest {
 
 	public void testDetermineFirstPlayerBetweenDiceRolls(int dice1, int dice2){
 		setupTwoPlayerFeatureTest();
-		controller.startingRolls = new int[2];
-		controller.startingRolls[0] = dice1;
-		controller.startingRolls[1] = dice2;
+		setupController.startingRolls = new int[2];
+		setupController.startingRolls[0] = dice1;
+		setupController.startingRolls[1] = dice2;
 
 		setupController.determineFirstPlayer();
 		EasyMock.verify(gameView);
