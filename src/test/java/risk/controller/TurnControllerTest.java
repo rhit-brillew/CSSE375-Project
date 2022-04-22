@@ -1263,7 +1263,7 @@ public class TurnControllerTest {
 
 	@Test
 	public void testDetermineWinnerAttackerWinsLastTerritory() {
-		mockedGameView.showWinMessage(0);
+		mockedGameView.showWinMessage(1);
 
 		EasyMock.replay(mockedGameView);
 		TurnController turnController = new TurnController(mockedGameView, mockedTerritories, playerModels, 0, mockedDie);

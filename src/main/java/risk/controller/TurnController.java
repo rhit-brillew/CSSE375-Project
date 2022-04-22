@@ -108,8 +108,8 @@ public class TurnController implements GameViewObserver {
 			.changeArmyAmountBy(-territories.getTerritoryByName(currentDefender).getNumberOfArmies());
 		territories.getTerritoryByName(currentDefender).setOwner(playerColor);
 		if(hasWon()) {
-			gameView.showWinMessage(currentPlayer);
-			gameView.updateGlobalGameState(currentPlayer, "the winner!");
+			gameView.showWinMessage(currentPlayer+1);
+			gameView.updateGlobalGameState(currentPlayer+1, "the winner!");
 			gameView.removeObserver(this);
 			return;
 		}

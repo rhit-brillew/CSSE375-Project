@@ -107,7 +107,9 @@ public class SetupController implements Runnable, GameViewObserver {
 			currentPlayer = i;
 			CardManager cards = playerModels.get(i).getCards();
 			for(Card card : cards.getTotalCards()){
-				claimTerritory(card.getTerritoryName());
+				if(!card.getTerritoryName().equals("")) {
+					claimTerritory(card.getTerritoryName());
+				}
 			}
 		}
 		currentPlayer = 0;
@@ -116,8 +118,10 @@ public class SetupController implements Runnable, GameViewObserver {
 	private void dealCards(){
 		for(int i = 0; i < playerModels.size(); i++){
 			int start = i * (territories.deck.size() / 3);
-			for(int j = start; j < start + territories.deck.size() / 3; j++){
-				playerModels.get(i).addCard(territories.deck.get(j));
+			for(int j = start; j < (start + territories.deck.size() / 3) + 2; j++){
+				if(!territories.deck.get(j).getTerritoryName().equals("")) {
+					playerModels.get(i).addCard(territories.deck.get(j));
+				}
 			}
 		}
 	}
