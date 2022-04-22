@@ -287,7 +287,6 @@ public class SetupControllerTest {
 		EasyMock.verify(gameViewMock, territoryMapControllerMock, territoryModelMock);
 	}
 
-	//TODO:THIS ONE
 	@Test
 	public void testTerritoryPressedClaimedWithNoUnclaimedTerritories(){
 		GameView gameViewMock = EasyMock.strictMock(GameView.class);
