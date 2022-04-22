@@ -61,7 +61,7 @@ public class AttackingPhaseController {
             try{
                 updateViewAndAttacker(territoryName);
             }catch(Exception e) {
-                turnController.updateErrorLabel(e.getMessage());
+                turnController.updateErrorLabel("defaultError");
             }
         }
     }
