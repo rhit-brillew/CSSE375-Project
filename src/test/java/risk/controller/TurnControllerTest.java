@@ -433,8 +433,6 @@ public class TurnControllerTest {
 
 	@Test
 	public void testTerritoryPressedAttackingCurrentAttackerNullTerritoryNameOwnedByOpponent() {
-		mockedGameView.updateErrorLabel("You do not own this territory");
-
 		EasyMock.replay(mockedGameView);
 		TurnController turnController = new TurnController(mockedGameView, mockedTerritories, playerModels, 0, mockedDie);
 		turnController.territories.getTerritoryByName("China").changeArmyAmountBy(1);
