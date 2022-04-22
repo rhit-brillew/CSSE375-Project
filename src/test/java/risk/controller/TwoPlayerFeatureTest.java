@@ -205,22 +205,15 @@ public class TwoPlayerFeatureTest {
 
 	@Test
 	public void testDetermineFirstPlayerTwoPlayersNonMatchingRolls(){
-		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
-		EasyMock.replay(gameView);
-
-		SetupController controller = new SetupController(gameView, die, mockedTerritories);
-		createCards();
-		controller.territories.setDeck(cards);
-		controller.startingRolls = new int[2];
-		controller.startingRolls[0] = 2;
-		controller.startingRolls[1] = 4;
-
-		controller.determineFirstPlayer();
-		EasyMock.verify(gameView);
+		testDetermineFirstPlayerBetweenDiceRolls(2, 4);
 	}
 
 	@Test
 	public void testDetermineFirstPlayerTwoPlayersMatchingRolls(){
+		testDetermineFirstPlayerBetweenDiceRolls(4, 4);
+	}
+
+	public void testDetermineFirstPlayerBetweenDiceRolls(int dice1, int dice2){
 		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
 		EasyMock.replay(gameView);
 
@@ -228,8 +221,8 @@ public class TwoPlayerFeatureTest {
 		createCards();
 		controller.territories.setDeck(cards);
 		controller.startingRolls = new int[2];
-		controller.startingRolls[0] = 4;
-		controller.startingRolls[1] = 4;
+		controller.startingRolls[0] = dice1;
+		controller.startingRolls[1] = dice2;
 
 		controller.determineFirstPlayer();
 		EasyMock.verify(gameView);
