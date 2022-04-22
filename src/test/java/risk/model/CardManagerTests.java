@@ -16,13 +16,18 @@ public class CardManagerTests {
         }
     }
 
+    public CardManager createManagerWithThreeCardsOfType(String type){
+        CardManager manager = new CardManager();
+        manager.add(new Card("", type));
+        manager.add(new Card("", type));
+        manager.add(new Card("", type));
+        return manager;
+    }
+
     @Test
     public void testDetermineCardToRemove2(){
         try {
-            CardManager manager = new CardManager();
-            manager.add(new Card("", "Wild"));
-            manager.add(new Card("", "Wild"));
-            manager.add(new Card("", "Wild"));
+            CardManager manager = createManagerWithThreeCardsOfType("Wild");
             manager.determineCardToRemove();
         } catch(IllegalArgumentException ex){
             Assert.assertTrue(true);
@@ -41,10 +46,7 @@ public class CardManagerTests {
 
     @Test
     public void testDetermineCardToRemove4(){
-        CardManager manager = new CardManager();
-        manager.add(new Card("", "Infantry"));
-        manager.add(new Card("", "Infantry"));
-        manager.add(new Card("", "Infantry"));
+        CardManager manager = createManagerWithThreeCardsOfType("Infantry");
         ArrayList<Card> actual = manager.determineCardToRemove();
         Assert.assertEquals(3, actual.size());
     }
@@ -61,10 +63,7 @@ public class CardManagerTests {
 
     @Test
     public void testDetermineCardToRemove6(){
-        CardManager manager = new CardManager();
-        manager.add(new Card("", "Cavalry"));
-        manager.add(new Card("", "Cavalry"));
-        manager.add(new Card("", "Cavalry"));
+        CardManager manager = createManagerWithThreeCardsOfType("Cavalry");
         ArrayList<Card> actual = manager.determineCardToRemove();
         Assert.assertEquals(3, actual.size());
     }
@@ -81,10 +80,7 @@ public class CardManagerTests {
 
     @Test
     public void testDetermineCardToRemove8(){
-        CardManager manager = new CardManager();
-        manager.add(new Card("", "Artillery"));
-        manager.add(new Card("", "Artillery"));
-        manager.add(new Card("", "Artillery"));
+        CardManager manager = createManagerWithThreeCardsOfType("Artillery");
         ArrayList<Card> actual = manager.determineCardToRemove();
         Assert.assertEquals(3, actual.size());
     }
@@ -101,10 +97,7 @@ public class CardManagerTests {
 
     @Test
     public void testDetermineCardToRemove10(){
-        CardManager manager = new CardManager();
-        manager.add(new Card("", "Infantry"));
-        manager.add(new Card("", "Infantry"));
-        manager.add(new Card("", "Infantry"));
+        CardManager manager = createManagerWithThreeCardsOfType("Infantry");
         manager.add(new Card("", "Artillery"));
         manager.add(new Card("", "Artillery"));
         manager.add(new Card("", "Wild"));

@@ -283,6 +283,10 @@ public class TurnController implements GameViewObserver {
 		return this.currentPlayer;
 	}
 
+	public PlayerModel getCurrentPlayerModel() {
+		return this.playerModels.get(this.currentPlayer);
+	}
+
 	public void setTerritoryRemovedFrom(String territoryRemovedFrom) {
 		this.territoryRemovedFrom = territoryRemovedFrom;
 	}

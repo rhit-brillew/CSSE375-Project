@@ -1,6 +1,7 @@
 package risk.model;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class PlayerModel {
@@ -51,4 +52,6 @@ public class PlayerModel {
 	public void removeCard(Card cardToRemove) {
 		this.cards.remove(cardToRemove);
 	}
+
+	public void removeCards(ArrayList<Card> cardsToRemove) { this.cards.removeAll(cardsToRemove); }
 }

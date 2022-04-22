@@ -1,5 +1,6 @@
 package risk.model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class CardManager {
@@ -62,6 +63,12 @@ public class CardManager {
         cavalryCards.remove(cardToRemove);
         artilleryCards.remove(cardToRemove);
         wildCards.remove(cardToRemove);
+    }
+
+    public void removeAll(ArrayList<Card> cardsToRemove){
+        for(Card currentCard : cardsToRemove){
+            remove(currentCard);
+        }
     }
 
     public ArrayList<Card> determineCardToRemove() {
