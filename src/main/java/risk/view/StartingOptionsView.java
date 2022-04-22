@@ -3,10 +3,14 @@ package risk.view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import risk.controller.StartingOptionsObservable;
 import risk.controller.StartingOptionsObserver;
+import java.awt.Toolkit;
 
 public class StartingOptionsView extends StartingOptionsObservable {
 	private JButton[] playerNumberButtons;
@@ -25,8 +29,9 @@ public class StartingOptionsView extends StartingOptionsObservable {
 
 	public StartingOptionsView() {
 		JFrame frame = new JFrame("Initialization Settings");
-		frame.setSize(300, 550);
+		frame.setSize(700, 450);
 		frame.setVisible(true);
+		addBackgroundImageToFrame(frame);
 		addPlayerButtonsPanelToFrame(frame);
 		addLocalizationButtonsPanelToFrame(frame);
 		addBoardButtonsPanelToFrame(frame);
@@ -35,11 +40,22 @@ public class StartingOptionsView extends StartingOptionsObservable {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
+	private void addBackgroundImageToFrame(JFrame frame) {
+		try {
+			ImageIcon icon  = new ImageIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/images/RISKBOX.PNG"))).getImage().getScaledInstance(frame.getWidth(),frame.getHeight(), Image.SCALE_SMOOTH));
+			frame.setContentPane(new JLabel(icon));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void addPlayerButtonsPanelToFrame(JFrame frame) {
+
 		JPanel playerButtonsPanel = new JPanel();
 		playerButtonsPanel.setLayout(new GridBagLayout());
-		playerButtonsPanel.setBounds(new Rectangle(0, 0, 175, 100));
-		
+		playerButtonsPanel.setBounds(new Rectangle(50, 250, 175, 100));
+		playerButtonsPanel.setOpaque(false);
+
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
@@ -47,6 +63,7 @@ public class StartingOptionsView extends StartingOptionsObservable {
 		c.gridwidth = numberOfPlayerButtons;
 		c.anchor = GridBagConstraints.LINE_START;
 		JLabel numberOfPlayersLabel = new JLabel("Number of Players");
+		numberOfPlayersLabel.setForeground(Color.WHITE);
 		playerButtonsPanel.add(numberOfPlayersLabel, c);
 
 		addPlayerButtonsToPanel(playerButtonsPanel);
@@ -91,7 +108,8 @@ public class StartingOptionsView extends StartingOptionsObservable {
 	private void addLocalizationButtonsPanelToFrame(JFrame frame) {
 		JPanel localizationButtonsPanel = new JPanel();
 		localizationButtonsPanel.setLayout(new GridBagLayout());
-		localizationButtonsPanel.setBounds(new Rectangle(0, 100, 175, 100));
+		localizationButtonsPanel.setBounds(new Rectangle(250, 250, 175, 100));
+		localizationButtonsPanel.setOpaque(false);
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -100,6 +118,7 @@ public class StartingOptionsView extends StartingOptionsObservable {
 		c.gridwidth = numberOfLocalizationButtons;
 		c.anchor = GridBagConstraints.LINE_START;
 		JLabel localizationLabel = new JLabel("Language");
+		localizationLabel.setForeground(Color.WHITE);
 		localizationButtonsPanel.add(localizationLabel, c);
 
 		addLocalizationButtonsToPanel(localizationButtonsPanel);
@@ -149,7 +168,8 @@ public class StartingOptionsView extends StartingOptionsObservable {
 	private void addBoardButtonsPanelToFrame(JFrame frame) {
 		JPanel boardButtonsPanel = new JPanel();
 		boardButtonsPanel.setLayout(new GridBagLayout());
-		boardButtonsPanel.setBounds(new Rectangle(0, 200, 175, 100));
+		boardButtonsPanel.setBounds(new Rectangle(450, 250, 175, 100));
+		boardButtonsPanel.setOpaque(false);
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -158,6 +178,7 @@ public class StartingOptionsView extends StartingOptionsObservable {
 		c.gridwidth = numberOfBoardButtons;
 		c.anchor = GridBagConstraints.LINE_START;
 		JLabel boardLabel = new JLabel("Board Option");
+		boardLabel.setForeground(Color.WHITE);
 		boardButtonsPanel.add(boardLabel, c);
 
 		addBoardButtonsToPanel(boardButtonsPanel);
@@ -203,8 +224,8 @@ public class StartingOptionsView extends StartingOptionsObservable {
 	private void addStartGamePanelToFrame(JFrame frame) {
 		JPanel startGamePanel = new JPanel();
 		startGamePanel.setLayout(new GridBagLayout());
-		startGamePanel.setBounds(new Rectangle(0, 0, 175, 100));
-
+		startGamePanel.setBounds(new Rectangle(250, 320, 175, 100));
+		startGamePanel.setOpaque(false);
 
 		JButton button = new JButton("Start Game");
 		button.setFocusable(false);
