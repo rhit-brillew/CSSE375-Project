@@ -22,17 +22,12 @@ import org.junit.Test;
  */
 
 public class TestGameView {
-
-	private void assertHeightAndWidth(BufferedImage image, int height, int width) {
-		assertEquals(width, image.getWidth());
-		assertEquals(height, image.getHeight());
-	}
-
 	@Test
 	public void testChangeImageToColor1x1Pixel() {
 		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		GameView.changeImageToColor(image, Color.MAGENTA);
-		assertHeightAndWidth(image, 1, 1);
+		assertEquals(1, image.getWidth());
+		assertEquals(1, image.getHeight());
 		assertImageIsMagenta(image);
 	}
 
@@ -48,7 +43,8 @@ public class TestGameView {
 	public void testChangeImageToColor1x50Pixel() {
 		BufferedImage image = new BufferedImage(1, 50, BufferedImage.TYPE_INT_ARGB);
 		GameView.changeImageToColor(image, Color.MAGENTA);
-		assertHeightAndWidth(image, 50, 1);
+		assertEquals(1, image.getWidth());
+		assertEquals(50, image.getHeight());
 		assertImageIsMagenta(image);
 	}
 
@@ -56,7 +52,8 @@ public class TestGameView {
 	public void testChangeImageToColor50x1Pixel() {
 		BufferedImage image = new BufferedImage(50, 1, BufferedImage.TYPE_INT_ARGB);
 		GameView.changeImageToColor(image, Color.MAGENTA);
-		assertHeightAndWidth(image, 1, 50);
+		assertEquals(50, image.getWidth());
+		assertEquals(1, image.getHeight());
 		assertImageIsMagenta(image);
 	}
 
@@ -64,7 +61,8 @@ public class TestGameView {
 	public void testChangeImageToColor50x50Pixel() {
 		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
 		GameView.changeImageToColor(image, Color.MAGENTA);
-		assertHeightAndWidth(image, 50, 50);
+		assertEquals(50, image.getWidth());
+		assertEquals(50, image.getHeight());
 		assertImageIsMagenta(image);
 	}
 
@@ -73,7 +71,8 @@ public class TestGameView {
 		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		makeImageClear(image);
 		GameView.changeImageToColor(image, Color.MAGENTA);
-		assertHeightAndWidth(image, 1, 1);
+		assertEquals(1, image.getWidth());
+		assertEquals(1, image.getHeight());
 		assertImageIsClear(image);
 	}
 
@@ -101,7 +100,8 @@ public class TestGameView {
 		BufferedImage image = new BufferedImage(1, 50, BufferedImage.TYPE_INT_ARGB);
 		makeImageClear(image);
 		GameView.changeImageToColor(image, Color.MAGENTA);
-		assertHeightAndWidth(image, 50, 1);
+		assertEquals(1, image.getWidth());
+		assertEquals(50, image.getHeight());
 		assertImageIsClear(image);
 	}
 
@@ -110,7 +110,8 @@ public class TestGameView {
 		BufferedImage image = new BufferedImage(50, 1, BufferedImage.TYPE_INT_ARGB);
 		makeImageClear(image);
 		GameView.changeImageToColor(image, Color.MAGENTA);
-		assertHeightAndWidth(image, 1, 50);
+		assertEquals(50, image.getWidth());
+		assertEquals(1, image.getHeight());
 		assertImageIsClear(image);
 	}
 
@@ -119,7 +120,8 @@ public class TestGameView {
 		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
 		makeImageClear(image);
 		GameView.changeImageToColor(image, Color.MAGENTA);
-		assertHeightAndWidth(image, 50, 50);
+		assertEquals(50, image.getWidth());
+		assertEquals(50, image.getHeight());
 		assertImageIsClear(image);
 	}
 }
