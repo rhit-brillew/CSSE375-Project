@@ -11,13 +11,12 @@ public class AttackingPhaseController {
 
     private boolean checkAdjacentTerritories(String territoryName) {
         return turnController.getTerritories().getTerritoryByName(territoryName)!=null
-                && turnController.getTerritories().areTerritoriesAdjacent(turnController.getCurrentAttacker(), territoryName);
+                && turnController.isAttackerAdjacent(territoryName);
     }
 
     private void beginAttack(String territoryName) {
-        if(turnController.getTerritories().getTerritoryByName(territoryName).getOwner()
-                .equals(turnController.getPlayerModels().get(turnController.getCurrentPlayer()).getColor())) {
-            turnController.getGameView().updateErrorLabel(turnController.getMessages().getString("attackOpponentWarning"));
+        if(turnController.getTerritoryOwner(territoryName).equals(turnController.getCurrentPlayerColor())) {
+            turnController.updateErrorLabel("attackOpponentWarning");
             return;
         }
        turnController.setCurrentDefender(territoryName);
@@ -28,7 +27,7 @@ public class AttackingPhaseController {
     private void updateViewAndAttacker(String territoryName) {
         turnController.verifyPlayerOwnsTerritoryAndTerritoryExists(territoryName);
         if(turnController.getTerritories().getTerritoryByName(territoryName).getNumberOfArmies()==1) {
-            turnController.getGameView().updateErrorLabel(turnController.getMessages().getString("minimumAttack"));
+            turnController.updateErrorLabel("minimumAttack");
             return;
         }
         turnController.getGameView().highlightTerritory(territoryName);
@@ -37,7 +36,7 @@ public class AttackingPhaseController {
 
     private void getDiceAmount() {
         GameView gameView = turnController.getGameView();
-        int armyCount = turnController.getTerritories().getTerritoryByName(turnController.getCurrentAttacker()).getNumberOfArmies();
+        int armyCount = turnController.getAttackingTerritoryArmyCount();
         if(armyCount==2) {
             gameView.showAttackCount(1);
         } else if(armyCount==3) {
@@ -48,22 +47,21 @@ public class AttackingPhaseController {
     }
 
     public void attackingPhase(String territoryName) {
-        GameView gameView = turnController.getGameView();
         if(turnController.getCurrentAttacker() != null) {
             if(turnController.getCurrentDefender() != null) {
-                gameView.updateErrorLabel(turnController.getMessages().getString("battleInProgress"));
+                turnController.updateErrorLabel("battleInProgress");
                 return;
             }
             if(checkAdjacentTerritories(territoryName)) {
                 beginAttack(territoryName);
             } else {
-                gameView.updateErrorLabel(turnController.getMessages().getString("attackInstructions"));
+                turnController.updateErrorLabel("attackInstructions");
             }
         } else {
             try{
                 updateViewAndAttacker(territoryName);
             }catch(Exception e) {
-                gameView.updateErrorLabel(e.getMessage());
+                turnController.updateErrorLabel(e.getMessage());
             }
         }
     }
