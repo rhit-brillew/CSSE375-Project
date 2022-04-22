@@ -40,21 +40,10 @@ public class CardsController {
     }
 
     private void removeCardsFromHandAndAddUnplacedArmiesToPlayer(ArrayList<Card> cards) {
-        ArrayList<PlayerModel> playerModels = turnController.getPlayerModels();
-        int currentPlayer = turnController.getCurrentPlayer();
+        PlayerModel player = turnController.getCurrentPlayerModel();
         TerritoryMapController territories = turnController.getTerritories();
-        boolean alreadyOwnedOne = false;
-        PlayerModel player = playerModels.get(currentPlayer);
-        for(Card currentCard: cards) {
-            String territoryName = currentCard.getTerritoryName();
-            if(territories.getTerritoryByName(territoryName).getOwner()
-                    == playerModels.get(currentPlayer).getColor()
-                    && !alreadyOwnedOne) {
-                territories.getTerritoryByName(territoryName).changeArmyAmountBy(2);
-                alreadyOwnedOne = true;
-            }
-            player.removeCard(currentCard);
-        }
+        territories.playerTurnedInCards(player, cards);
+        player.removeCards(cards);
         player.addNumberOfUnplacedArmies(calculateNumberOfUnplacedArmiesToAddForTurningInCards());
         turnController.setsTurnedIn++;
     }

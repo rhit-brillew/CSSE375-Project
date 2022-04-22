@@ -175,6 +175,23 @@ public class TerritoryMapController {
 		return bonusTroops;
 	}
 
+	public void playerTurnedInCards(PlayerModel player, ArrayList<Card> cards){
+		for(Card currentCard: cards) {
+			String territoryName = currentCard.getTerritoryName();
+			if(playerTurnedInCardForTerritory(player.getColor(), territoryName)){
+				return;
+			}
+		}
+	}
+
+	public boolean playerTurnedInCardForTerritory(Color playerColor, String territoryName){
+		if(getTerritoryByName(territoryName).getOwner() == playerColor) {
+			getTerritoryByName(territoryName).changeArmyAmountBy(2);
+			return true;
+		}
+		return false;
+	}
+
 	public boolean checkOwnsContinent(Color territoryOwner, String continentName){
 		ArrayList<String> territories = getAllTerritoriesInContinent(continentName);
 		for (String territory : territories) {

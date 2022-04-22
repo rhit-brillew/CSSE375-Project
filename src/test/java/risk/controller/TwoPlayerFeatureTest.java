@@ -15,6 +15,7 @@ public class TwoPlayerFeatureTest {
 	ArrayList<Card> cards = new ArrayList<>();
 	GameView gameView = EasyMock.niceMock(GameView.class);
 	SixSidedDie die = EasyMock.strictMock(SixSidedDie.class);
+	SetupController setupController;
 
 	public TerritoryMapController createMockedTerritories(){
 		TerritoryMapController territories = EasyMock.partialMockBuilder(TerritoryMapController.class)
@@ -104,13 +105,17 @@ public class TwoPlayerFeatureTest {
 				.withArgs("Siberia", "Infantry").createMock());
 	}
 
-	@Test
-	public void  testPlaceNeutralArmies() {
+	public void setupTwoPlayerFeatureTest(){
 		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
 		EasyMock.replay(gameView);
-		SetupController setupController = new SetupController(gameView, die, mockedTerritories);
+		setupController = new SetupController(gameView, die, mockedTerritories);
 		createCards();
 		setupController.territories.setDeck(cards);
+	}
+
+	@Test
+	public void  testPlaceNeutralArmies() {
+		setupTwoPlayerFeatureTest();
 		setupController.twoPlayerSetupPhase();
 		Assert.assertEquals(35, setupController.neutralPlayer.getNumberOfUnplacedArmies());
 		EasyMock.verify(gameView);
@@ -118,12 +123,8 @@ public class TwoPlayerFeatureTest {
 
 	@Test
 	public void  testClaimAlreadyClaimed() {
-		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
-		EasyMock.replay(gameView);
-		SetupController setupController = new SetupController(gameView, die, mockedTerritories);
+		setupTwoPlayerFeatureTest();
 		setupController.gameState = SetupController.GameState.CLAIMING;
-		createCards();
-		setupController.territories.setDeck(cards);
 		setupController.twoPlayerSetupPhase();
 		Assert.assertEquals(35, setupController.neutralPlayer.getNumberOfUnplacedArmies());
 
@@ -135,12 +136,8 @@ public class TwoPlayerFeatureTest {
 
 	@Test
 	public void  testClaimUnclaimed() {
-		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
-		EasyMock.replay(gameView);
-		SetupController setupController = new SetupController(gameView, die, mockedTerritories);
+		setupTwoPlayerFeatureTest();
 		setupController.gameState = SetupController.GameState.CLAIMING;
-		createCards();
-		setupController.territories.setDeck(cards);
 		setupController.twoPlayerSetupPhase();
 		Assert.assertEquals(35, setupController.neutralPlayer.getNumberOfUnplacedArmies());
 
@@ -152,12 +149,8 @@ public class TwoPlayerFeatureTest {
 
 	@Test
 	public void  testPlaceTwoArmiesOnClaimedTerritory() {
-		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
-		EasyMock.replay(gameView);
-		SetupController setupController = new SetupController(gameView, die, mockedTerritories);
+		setupTwoPlayerFeatureTest();
 		setupController.gameState = SetupController.GameState.CLAIMING;
-		createCards();
-		setupController.territories.setDeck(cards);
 		setupController.twoPlayerSetupPhase();
 		Assert.assertEquals(35, setupController.neutralPlayer.getNumberOfUnplacedArmies());
 
@@ -172,12 +165,8 @@ public class TwoPlayerFeatureTest {
 
 	@Test
 	public void  testPlaceTwoArmiesOnDifferentClaimedTerritories() {
-		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
-		EasyMock.replay(gameView);
-		SetupController setupController = new SetupController(gameView, die, mockedTerritories);
+		setupTwoPlayerFeatureTest();
 		setupController.gameState = SetupController.GameState.CLAIMING;
-		createCards();
-		setupController.territories.setDeck(cards);
 		setupController.twoPlayerSetupPhase();
 		Assert.assertEquals(35, setupController.neutralPlayer.getNumberOfUnplacedArmies());
 
@@ -191,11 +180,7 @@ public class TwoPlayerFeatureTest {
 
 	@Test
 	public void  testPlacePlayerArmies() {
-		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
-		EasyMock.replay(gameView);
-		SetupController setupController = new SetupController(gameView, die, mockedTerritories);
-		createCards();
-		setupController.territories.setDeck(cards);
+		setupTwoPlayerFeatureTest();
 		setupController.twoPlayerSetupPhase();
 
 		Assert.assertEquals(35, setupController.playerModels.get(0).getNumberOfUnplacedArmies());
@@ -205,33 +190,23 @@ public class TwoPlayerFeatureTest {
 
 	@Test
 	public void testDetermineFirstPlayerTwoPlayersNonMatchingRolls(){
-		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
-		EasyMock.replay(gameView);
+		setupTwoPlayerFeatureTest();
+		setupController.startingRolls = new int[2];
+		setupController.startingRolls[0] = 2;
+		setupController.startingRolls[1] = 4;
 
-		SetupController controller = new SetupController(gameView, die, mockedTerritories);
-		createCards();
-		controller.territories.setDeck(cards);
-		controller.startingRolls = new int[2];
-		controller.startingRolls[0] = 2;
-		controller.startingRolls[1] = 4;
-
-		controller.determineFirstPlayer();
+		setupController.determineFirstPlayer();
 		EasyMock.verify(gameView);
 	}
 
 	@Test
 	public void testDetermineFirstPlayerTwoPlayersMatchingRolls(){
-		EasyMock.expect(gameView.getNumberOfPlayers()).andReturn(2);
-		EasyMock.replay(gameView);
+		setupTwoPlayerFeatureTest();
+		setupController.startingRolls = new int[2];
+		setupController.startingRolls[0] = 4;
+		setupController.startingRolls[1] = 4;
 
-		SetupController controller = new SetupController(gameView, die, mockedTerritories);
-		createCards();
-		controller.territories.setDeck(cards);
-		controller.startingRolls = new int[2];
-		controller.startingRolls[0] = 4;
-		controller.startingRolls[1] = 4;
-
-		controller.determineFirstPlayer();
+		setupController.determineFirstPlayer();
 		EasyMock.verify(gameView);
 	}
 }
