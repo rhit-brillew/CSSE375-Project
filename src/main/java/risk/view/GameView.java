@@ -174,6 +174,12 @@ public class GameView extends GameViewObservable {
 		diceLabel.setBounds(1400, 0, 100, GAME_BAR_PANEL_HEIGHT);
 		diceLabel.setForeground(Color.white);
 
+		addRollResultsToDisplay(image);
+		addDiceMouseListener();
+		gameBarPanel.add(diceLabel);
+	}
+
+	private void addRollResultsToDisplay(ImageIcon image) {
 		for(int i = 0; i < 3; i++){
 			JLabel rollResult = new JLabel("", image, SwingConstants.RIGHT);
 			rollResult.setLayout(null);
@@ -183,7 +189,9 @@ public class GameView extends GameViewObservable {
 			diceRollsResults.add(rollResult);
 			gameBarPanel.add(rollResult);
 		}
+	}
 
+	private void addDiceMouseListener() {
 		diceLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -199,8 +207,6 @@ public class GameView extends GameViewObservable {
 				}
 			}
 		});
-		
-		gameBarPanel.add(diceLabel);
 	}
 	
 	private void initializeCardLabel() {
@@ -445,7 +451,11 @@ public class GameView extends GameViewObservable {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				for(GameViewObserver observer : observers) {
-					observer.moveTroops(slider.getValue());
+					if(slider.equals(troopCount)){
+						observer.moveTroops(slider.getValue());
+					}else{
+						observer.determineNumberOfRolls(slider.getValue());
+					}
 					slider.setVisible(false);
 					submit.setVisible(false);
 				}

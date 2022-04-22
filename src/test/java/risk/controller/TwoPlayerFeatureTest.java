@@ -190,21 +190,19 @@ public class TwoPlayerFeatureTest {
 
 	@Test
 	public void testDetermineFirstPlayerTwoPlayersNonMatchingRolls(){
-		setupTwoPlayerFeatureTest();
-		setupController.startingRolls = new int[2];
-		setupController.startingRolls[0] = 2;
-		setupController.startingRolls[1] = 4;
-
-		setupController.determineFirstPlayer();
-		EasyMock.verify(gameView);
+		testDetermineFirstPlayerBetweenDiceRolls(2, 4);
 	}
 
 	@Test
 	public void testDetermineFirstPlayerTwoPlayersMatchingRolls(){
+		testDetermineFirstPlayerBetweenDiceRolls(4, 4);
+	}
+
+	public void testDetermineFirstPlayerBetweenDiceRolls(int dice1, int dice2){
 		setupTwoPlayerFeatureTest();
-		setupController.startingRolls = new int[2];
-		setupController.startingRolls[0] = 4;
-		setupController.startingRolls[1] = 4;
+		controller.startingRolls = new int[2];
+		controller.startingRolls[0] = dice1;
+		controller.startingRolls[1] = dice2;
 
 		setupController.determineFirstPlayer();
 		EasyMock.verify(gameView);

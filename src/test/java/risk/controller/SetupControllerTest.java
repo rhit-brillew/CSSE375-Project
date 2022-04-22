@@ -115,11 +115,11 @@ public class SetupControllerTest {
 		EasyMock.replay(gameViewMock);
 
 		ArrayList<PlayerModel> expectedPlayerModels = new ArrayList<>();
-		expectedPlayerModels.add(new PlayerModel(25, ColorFactory.createColor("Player1")));
-		expectedPlayerModels.add(new PlayerModel(25, ColorFactory.createColor("Player2")));
-		expectedPlayerModels.add(new PlayerModel(25, ColorFactory.createColor("Player3")));
-		expectedPlayerModels.add(new PlayerModel(25, ColorFactory.createColor("Player4")));
-		expectedPlayerModels.add(new PlayerModel(25, ColorFactory.createColor("Player5")));
+		expectedPlayerModels.add(new PlayerModel(25, Color.RED));
+		expectedPlayerModels.add(new PlayerModel(25, new Color(0, 150, 0)));
+		expectedPlayerModels.add(new PlayerModel(25, Color.BLUE));
+		expectedPlayerModels.add(new PlayerModel(25, Color.MAGENTA));
+		expectedPlayerModels.add(new PlayerModel(25, new Color(0, 150, 150)));
 
 		SetupController controller = new SetupController(gameViewMock, null, null);
 		assetPlayerModelArraysEqual(controller.playerModels, expectedPlayerModels);

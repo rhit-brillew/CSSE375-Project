@@ -236,7 +236,6 @@ public class TerritoryMapController {
 		}
 		addTerritoriesToController(list, territoryMapController);
 		addContinentsToController(continentList, territoryMapController);
-		addWildCardsToController(territoryMapController);
 		return territoryMapController;
 	}
 
@@ -262,12 +261,6 @@ public class TerritoryMapController {
 			String name = element.getAttribute("name");
 			int troopValue = Integer.parseInt(element.getAttribute("troopValue"));
 			controller.addContinent(name,troopValue);
-		}
-	}
-
-	private static void addWildCardsToController(TerritoryMapController controller){
-		for(int i = 0; i < 2; i++){
-			controller.addCard(new Card("", "Wild"));
 		}
 	}
 
