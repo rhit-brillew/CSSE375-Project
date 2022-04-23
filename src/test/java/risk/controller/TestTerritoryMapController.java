@@ -106,18 +106,8 @@ public class TestTerritoryMapController {
 	}
 
 	private TerritoryMapController createAllTerritoriesFromXML() {
-		NodeList nodeList = null;
+		NodeList nodeList = getTerritoryFromFileHelper();
 		TerritoryMapController territoryMapController = new TerritoryMapController();
-		try {
-			File file = new File("src/main/resources/board1/territoryLocations.xml");
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(file);
-			doc.getDocumentElement().normalize();
-			nodeList = doc.getElementsByTagName("territory");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		if (nodeList != null) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
@@ -134,6 +124,20 @@ public class TestTerritoryMapController {
 			}
 		}
 		return territoryMapController;
+	}
+
+	private NodeList getTerritoryFromFileHelper(){
+		try {
+			File file = new File("src/main/resources/board1/territoryLocations.xml");
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document doc = db.parse(file);
+			doc.getDocumentElement().normalize();
+			return doc.getElementsByTagName("territory");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private void setNTerritoriesToBeClaimed(int n, TerritoryMapController territoryMapController) {
