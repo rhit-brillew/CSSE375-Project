@@ -1,50 +1,50 @@
 <data>
-	<continent name="North America" troopValue="5"/>
-	<continent name="South America" troopValue="2"/>
-	<continent name="Asia" troopValue="7"/>
-	<continent name="Africa" troopValue="3"/>
-	<continent name="Europe" troopValue="5"/>
-	<continent name="Australia" troopValue="2"/>
-	<territory name="Alaska" x="120" y="190" continent="North America" troopType="Infantry"/>
-	<territory name="Northwest Territory" x="290" y="200" continent="North America" troopType="Artillery"/>
-	<territory name="Alberta" x="340" y="320" continent="North America" troopType="Cavalry"/>
-	<territory name="Ontario" x="390" y="290" continent="North America" troopType="Cavalry"/>
-	<territory name="Eastern Canada" x="540" y="295" continent="North America" troopType="Cavalry"/>
-	<territory name="Greenland" x="660" y="190" continent="North America" troopType="Cavalry"/>
-	<territory name="Western United States" x="365" y="375" continent="North America" troopType="Artillery"/>
-	<territory name="Eastern United States" x="510" y="395" continent="North America" troopType="Artillery"/>
-	<territory name="Central America" x="365" y="540" continent="North America" troopType="Artillery"/>
-	<territory name="Venezuela" x="515" y="585" continent="South America" troopType="Infantry"/>
-	<territory name="Brazil" x="630" y="710" continent="South America" troopType="Artillery"/>
-	<territory name="Peru" x="535" y="730" continent="South America" troopType="Infantry"/>
-	<territory name="Argentina" x="490" y="835" continent="South America" troopType="Infantry"/>
-	<territory name="Iceland" x="845" y="255" continent="Europe" troopType="Infantry"/>
-	<territory name="Scandinavia" x="960" y="280" continent="Europe" troopType="Cavalry"/>
-	<territory name="Great Britain" x="785" y="330" continent="Europe" troopType="Artillery"/>
-	<territory name="Russia" x="1130" y="370" continent="Europe" troopType="Cavalry"/>
-	<territory name="Northern Europe" x="915" y="415" continent="Europe" troopType="Artillery"/>
-	<territory name="Southern Europe" x="1010" y="495" continent="Europe" troopType="Artillery"/>
-	<territory name="Western Europe" x="860" y="470" continent="Europe" troopType="Artillery"/>
-	<territory name="North Africa" x="910" y="590" continent="Africa" troopType="Cavalry"/>
-	<territory name="Egypt" x="990" y="605" continent="Africa" troopType="Infantry"/>
-	<territory name="East Africa" x="1095" y="665" continent="Africa" troopType="Infantry"/>
-	<territory name="Central Africa" x="1030" y="730" continent="Africa" troopType="Infantry"/>
-	<territory name="South Africa" x="1010" y="835" continent="Africa" troopType="Artillery"/>
-	<territory name="Madagascar" x="1198" y="863" continent="Africa" troopType="Cavalry"/>
-	<territory name="Ural" x="1340" y="340" continent="Asia" troopType="Cavalry"/>
-	<territory name="Siberia" x="1430" y="270" continent="Asia" troopType="Cavalry"/>
-	<territory name="Yakutsk" x="1550" y="215" continent="Asia" troopType="Cavalry"/>
-	<territory name="Kamchatka" x="1680" y="230" continent="Asia" troopType="Infantry"/>
-	<territory name="Irkutsk" x="1550" y="285" continent="Asia" troopType="Cavalry"/>
-	<territory name="China" x="1460" y="470" continent="Asia" troopType="Infantry"/>
-	<territory name="Mongolia" x="1510" y="380" continent="Asia" troopType="Infantry"/>
-	<territory name="Japan" x="1768" y="377" continent="Asia" troopType="Artillery"/>
-	<territory name="Afghanistan" x="1280" y="395" continent="Asia" troopType="Cavalry"/>
-	<territory name="Middle East" x="1180" y="580" continent="Asia" troopType="Infantry"/>
-	<territory name="India" x="1350" y="520" continent="Asia" troopType="Cavalry"/>
-	<territory name="Southeast Asia" x="1585" y="625" continent="Asia" troopType="Infantry"/>
-	<territory name="Indonesia" x="1585" y="725" continent="Australia" troopType="Artillery"/>
-	<territory name="New Guinea" x="1725" y="720" continent="Australia" troopType="Infantry"/>
-	<territory name="Western Australia" x="1645" y="845" continent="Australia" troopType="Artillery"/>
-	<territory name="Eastern Australia" x="1720" y="810" continent="Australia" troopType="Artillery"/>
+	<continent name="Uiropa" troopValue="6"/>
+	<continent name="Azio" troopValue="7"/>
+	<continent name="Ameroki" troopValue="6"/>
+	<continent name="Afroki" troopValue="5"/>
+	<continent name="Amerpolu" troopValue="3"/>
+	<continent name="Uistralia" troopValue="3"/>
+	<territory name="Alaska" x="510" y="780" continent="Ameroki" troopType="Infantry"/>
+	<territory name="Northwest Territories" x="220" y="565" continent="Ameroki" troopType="Artillery"/>
+	<territory name="Alberta" x="300" y="760" continent="Ameroki" troopType="Cavalry"/>
+	<territory name="Ontario" x="350" y="850" continent="Ameroki" troopType="Cavalry"/>
+	<territory name="Verenigde Staten (West)" x="380" y="660" continent="Ameroki" troopType="Cavalry"/>
+	<territory name="Groenland" x="250" y="860" continent="Ameroki" troopType="Cavalry"/>
+	<territory name="Verenigde Staten (Oost)" x="550" y="560" continent="Ameroki" troopType="Artillery"/>
+	<territory name="Midden-Amerika" x="430" y="810" continent="Ameroki" troopType="Artillery"/>
+	<territory name="Quebec" x="520" y="850" continent="Ameroki" troopType="Artillery"/>
+	<territory name="Venezuela" x="1030" y="150" continent="Amerpolu" troopType="Infantry"/>
+	<territory name="Brazilie" x="1210" y="130" continent="Amerpolu" troopType="Artillery"/>
+	<territory name="Peru" x="1115" y="100" continent="Amerpolu" troopType="Infantry"/>
+	<territory name="Argentinie" x="780" y="135" continent="Amerpolu" troopType="Infantry"/>
+	<territory name="Oekraine" x="330" y="290" continent="Uiropa" troopType="Infantry"/>
+	<territory name="Scandinavie" x="430" y="440" continent="Uiropa" troopType="Cavalry"/>
+	<territory name="IJsland" x="280" y="385" continent="Uiropa" troopType="Artillery"/>
+	<territory name="Groot-Brittanie" x="700" y="390" continent="Uiropa" troopType="Cavalry"/>
+	<territory name="Noord-Uiropa" x="690" y="255" continent="Uiropa" troopType="Artillery"/>
+	<territory name="Zuid-Uiropa" x="545" y="310" continent="Uiropa" troopType="Artillery"/>
+	<territory name="West Uiropa" x="490" y="345" continent="Uiropa" troopType="Artillery"/>
+	<territory name="Noord-Afrika" x="1500" y="290" continent="Afroki" troopType="Cavalry"/>
+	<territory name="Egypte" x="1345" y="290" continent="Afroki" troopType="Infantry"/>
+	<territory name="Oost-Afrika" x="1690" y="380" continent="Afroki" troopType="Infantry"/>
+	<territory name="Centraal Afrika" x="1540" y="420" continent="Afroki" troopType="Infantry"/>
+	<territory name="Zuid-Afrika" x="1640" y="560" continent="Afroki" troopType="Artillery"/>
+	<territory name="Madagascar" x="1800" y="370" continent="Afroki" troopType="Cavalry"/>
+	<territory name="Oeral" x="720" y="945" continent="Azio" troopType="Cavalry"/>
+	<territory name="Siberie" x="990" y="370" continent="Azio" troopType="Cavalry"/>
+	<territory name="Jakoetsk" x="700" y="660" continent="Azio" troopType="Cavalry"/>
+	<territory name="Kamtsjatka" x="1160" y="720" continent="Azio" troopType="Infantry"/>
+	<territory name="Irkoetsk" x="830" y="550" continent="Azio" troopType="Cavalry"/>
+	<territory name="China" x="840" y="810" continent="Azio" troopType="Infantry"/>
+	<territory name="Mongolie" x="850" y="700" continent="Azio" troopType="Infantry"/>
+	<territory name="Japan" x="1330" y="560" continent="Azio" troopType="Artillery"/>
+	<territory name="Afghanistan" x="1160" y="870" continent="Azio" troopType="Cavalry"/>
+	<territory name="Midden-Oosten" x="970" y="700" continent="Azio" troopType="Infantry"/>
+	<territory name="India" x="1145" y="545" continent="Azio" troopType="Cavalry"/>
+	<territory name="Zuidoost-Azio" x="1060" y="875" continent="Azio" troopType="Infantry"/>
+	<territory name="Indonesie" x="1730" y="710" continent="Uistralia" troopType="Artillery"/>
+	<territory name="Nieuw-Guinea" x="1570" y="740" continent="Uistralia" troopType="Infantry"/>
+	<territory name="West-Australie" x="1520" y="840" continent="Uistralia" troopType="Artillery"/>
+	<territory name="Oost-Australie" x="1750" y="880" continent="Uistralia" troopType="Artillery"/>
 </data>
