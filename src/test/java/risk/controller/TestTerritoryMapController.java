@@ -15,6 +15,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import risk.model.Edge;
 import risk.model.TerritoryModel;
 
 
@@ -105,18 +106,8 @@ public class TestTerritoryMapController {
 	}
 
 	private TerritoryMapController createAllTerritoriesFromXML() {
-		NodeList nodeList = null;
+		NodeList nodeList = getTerritoryFromFileHelper();
 		TerritoryMapController territoryMapController = new TerritoryMapController();
-		try {
-			File file = new File("src/main/resources/territoryLocations.xml");
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(file);
-			doc.getDocumentElement().normalize();
-			nodeList = doc.getElementsByTagName("territory");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		if (nodeList != null) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
@@ -133,6 +124,20 @@ public class TestTerritoryMapController {
 			}
 		}
 		return territoryMapController;
+	}
+
+	private NodeList getTerritoryFromFileHelper(){
+		try {
+			File file = new File("src/main/resources/board1/territoryLocations.xml");
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document doc = db.parse(file);
+			doc.getDocumentElement().normalize();
+			return doc.getElementsByTagName("territory");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private void setNTerritoriesToBeClaimed(int n, TerritoryMapController territoryMapController) {
@@ -184,6 +189,21 @@ public class TestTerritoryMapController {
 		} catch (IllegalArgumentException e) {
 			assertEquals("Territory name must be a valid string", e.getMessage());
 		}
+	}
+
+	@Test
+	public void testSetTerritoryOwnerByName(){
+		TerritoryMapController territoryMapController = createAllTerritoriesFromXML();
+		territoryMapController.setTerritoryOwnerByName("China", Color.RED);
+		assertEquals(Color.RED, territoryMapController.getTerritoryByName("China").getOwner());
+	}
+
+	@Test
+	public void testChangeTerritoryArmyAmountBy(){
+		TerritoryMapController territoryMapController = createAllTerritoriesFromXML();
+		int armyAmount = territoryMapController.getTerritoryByName("China").getNumberOfArmies();
+		territoryMapController.changeTerritoryArmyAmountBy("China", 1);
+		assertEquals(armyAmount+1, territoryMapController.getTerritoryByName("China").getNumberOfArmies());
 	}
 
 	@Test
@@ -245,7 +265,7 @@ public class TestTerritoryMapController {
 		NodeList nodeList = null;
 
 		try {
-			File file = new File("src/main/resources/territoryEdges.xml");
+			File file = new File("src/main/resources/board1/territoryEdges.xml");
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(file);
@@ -368,7 +388,7 @@ public class TestTerritoryMapController {
 		territoryMapController.getTerritoryByName("Yakutsk").setOwner(player1Color);
 		territoryMapController.getTerritoryByName("Kamchatka").setOwner(player1Color);
 
-		Assert.assertTrue(territoryMapController.ownsContinentAsia(player1Color));
+		Assert.assertTrue(territoryMapController.checkOwnsContinent(player1Color, "Asia"));
 	}
 
 	@Test
@@ -384,7 +404,7 @@ public class TestTerritoryMapController {
 		territoryMapController.getTerritoryByName("Great Britain").setOwner(player1Color);
 		territoryMapController.getTerritoryByName("Iceland").setOwner(player1Color);
 
-		Assert.assertTrue(territoryMapController.ownsContinentEurope(player1Color));
+		Assert.assertTrue(territoryMapController.checkOwnsContinent(player1Color, "Europe"));
 	}
 
 	@Test
@@ -402,7 +422,7 @@ public class TestTerritoryMapController {
 		territoryMapController.getTerritoryByName("Eastern United States").setOwner(player1Color);
 		territoryMapController.getTerritoryByName("Central America").setOwner(player1Color);
 
-		Assert.assertTrue(territoryMapController.ownsContinentNorthAmerica(player1Color));
+		Assert.assertTrue(territoryMapController.checkOwnsContinent(player1Color, "North America"));
 	}
 
 	@Test
@@ -415,7 +435,7 @@ public class TestTerritoryMapController {
 		territoryMapController.getTerritoryByName("Argentina").setOwner(player1Color);
 		territoryMapController.getTerritoryByName("Venezuela").setOwner(player1Color);
 
-		Assert.assertTrue(territoryMapController.ownsContinentSouthAmerica(player1Color));
+		Assert.assertTrue(territoryMapController.checkOwnsContinent(player1Color, "South America"));
 	}
 
 	@Test
@@ -430,7 +450,7 @@ public class TestTerritoryMapController {
 		territoryMapController.getTerritoryByName("South Africa").setOwner(player1Color);
 		territoryMapController.getTerritoryByName("Madagascar").setOwner(player1Color);
 
-		Assert.assertTrue(territoryMapController.ownsContinentAfrica(player1Color));
+		Assert.assertTrue(territoryMapController.checkOwnsContinent(player1Color, "Africa"));
 	}
 
 	@Test
@@ -443,7 +463,7 @@ public class TestTerritoryMapController {
 		territoryMapController.getTerritoryByName("Western Australia").setOwner(player1Color);
 		territoryMapController.getTerritoryByName("Eastern Australia").setOwner(player1Color);
 
-		Assert.assertTrue(territoryMapController.ownsContinentAustralia(player1Color));
+		Assert.assertTrue(territoryMapController.checkOwnsContinent(player1Color, "Australia"));
 	}
 
 	@Test
@@ -456,13 +476,13 @@ public class TestTerritoryMapController {
 		territoryMapController.getTerritoryByName("Western Australia").setOwner(player1Color);
 		territoryMapController.getTerritoryByName("Eastern Australia").setOwner(player1Color);
 
-		Assert.assertFalse(territoryMapController.ownsContinentAustralia(player1Color));
+		Assert.assertFalse(territoryMapController.checkOwnsContinent(player1Color, "Australia"));
 	}
 
 	@Test
 	public void testReadTerritoryXMLData() {
 		TerritoryMapController expectedTerritoryMapController = createTerritoryMapControllerFullTerritoriesAndEdges();
-		TerritoryMapController actualTerritoryMapController = TerritoryMapController.loadTerritoryXMLData();
+		TerritoryMapController actualTerritoryMapController = TerritoryMapController.loadTerritoryXMLData(1);
 		for(int i = 0; i < expectedTerritoryMapController.allTerritories.size(); i++) {
 			TerritoryModel expectedTerritory = expectedTerritoryMapController.allTerritories.get(i);
 			assertEquals(expectedTerritory, actualTerritoryMapController.allTerritories.get(i));
@@ -470,7 +490,7 @@ public class TestTerritoryMapController {
 		assertEquals(expectedTerritoryMapController.allTerritories.size(),
 				actualTerritoryMapController.allTerritories.size());
 		for(int i = 0; i < expectedTerritoryMapController.edges.size(); i++) {
-			TerritoryMapController.Edge expectedEdge = expectedTerritoryMapController.edges.get(i);
+			Edge expectedEdge = expectedTerritoryMapController.edges.get(i);
 			assertEquals(expectedEdge, actualTerritoryMapController.edges.get(i));
 		}
 		assertEquals(expectedTerritoryMapController.edges.size(), actualTerritoryMapController.edges.size());
@@ -588,6 +608,7 @@ public class TestTerritoryMapController {
 		territoryMapController.addEdge("Egypt", "East Africa");
 		territoryMapController.addEdge("East Africa", "Middle East");
 		territoryMapController.addEdge("East Africa", "Madagascar");
+		territoryMapController.addEdge("South Africa","Madagascar");
 		territoryMapController.addEdge("Central Africa", "East Africa");
 		territoryMapController.addEdge("Central Africa", "South Africa");
 		territoryMapController.addEdge("Ural", "Siberia");
@@ -622,54 +643,54 @@ public class TestTerritoryMapController {
 
 	@Test
 	public void testEdgeEqualsSameObject() {
-		TerritoryMapController.Edge edge = new TerritoryMapController.Edge("T1", "T2");
+		Edge edge = new Edge("T1", "T2");
 		assertTrue(edge.equals(edge));
 	}
 
 	@Test
 	public void testEdgeEqualsNullObject() {
-		TerritoryMapController.Edge edge = new TerritoryMapController.Edge("T1", "T2");
+		Edge edge = new Edge("T1", "T2");
 		assertFalse(edge.equals(null));
 	}
 
 	@Test
 	public void testEdgeEqualsNotAnEdge() {
-		TerritoryMapController.Edge edge = new TerritoryMapController.Edge("T1", "T2");
+		Edge edge = new Edge("T1", "T2");
 		assertFalse(edge.equals(Integer.valueOf(5)));
 	}
 
 	@Test
 	public void testEdgeEqualsSameVariables() {
-		TerritoryMapController.Edge edge1 = new TerritoryMapController.Edge("T1", "T2");
+		Edge edge1 = new Edge("T1", "T2");
 		edge1.traversed = true;
-		TerritoryMapController.Edge edge2 = new TerritoryMapController.Edge("T1", "T2");
+		Edge edge2 = new Edge("T1", "T2");
 		edge2.traversed = true;
-		assertTrue(edge1.equals(edge2));
+		assertEquals(edge1, edge2);
 	}
 
 	@Test
 	public void testEdgeEqualsTraversedDifferent() {
-		TerritoryMapController.Edge edge1 = new TerritoryMapController.Edge("T1", "T2");
+		Edge edge1 = new Edge("T1", "T2");
 		edge1.traversed = true;
-		TerritoryMapController.Edge edge2 = new TerritoryMapController.Edge("T1", "T2");
+		Edge edge2 = new Edge("T1", "T2");
 		edge2.traversed = false;
 		assertFalse(edge1.equals(edge2));
 	}
 
 	@Test
 	public void testEdgeEqualsT1Different() {
-		TerritoryMapController.Edge edge1 = new TerritoryMapController.Edge("T1One", "T2");
+		Edge edge1 = new Edge("T1One", "T2");
 		edge1.traversed = true;
-		TerritoryMapController.Edge edge2 = new TerritoryMapController.Edge("T1Two", "T2");
+		Edge edge2 = new Edge("T1Two", "T2");
 		edge2.traversed = true;
 		assertFalse(edge1.equals(edge2));
 	}
 
 	@Test
 	public void testEdgeEqualsT2Different() {
-		TerritoryMapController.Edge edge1 = new TerritoryMapController.Edge("T1", "T2One");
+		Edge edge1 = new Edge("T1", "T2One");
 		edge1.traversed = true;
-		TerritoryMapController.Edge edge2 = new TerritoryMapController.Edge("T1", "T2Two");
+		Edge edge2 = new Edge("T1", "T2Two");
 		edge2.traversed = true;
 		assertFalse(edge1.equals(edge2));
 	}
@@ -677,7 +698,7 @@ public class TestTerritoryMapController {
 	@Test
 	public void testEdgeHashCode() {
 		try {
-			new TerritoryMapController.Edge("T1", "T2").hashCode();
+			new Edge("T1", "T2").hashCode();
 			fail();
 		} catch (UnsupportedOperationException e) {
 			assertEquals("Hashcode not supported", e.getMessage());

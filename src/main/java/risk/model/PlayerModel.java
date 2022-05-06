@@ -1,12 +1,13 @@
 package risk.model;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class PlayerModel {
 	private int numberOfUnplacedArmies;
 	private Color color;
-	private ArrayList<Card> cards;
+	private CardManager cards;
 
 	public PlayerModel(Integer unplacedArmies, Color color){
 		if(unplacedArmies > 40){
@@ -16,7 +17,7 @@ public class PlayerModel {
 		} else {
 			this.numberOfUnplacedArmies = unplacedArmies;
 			this.color = color;
-			this.cards = new ArrayList<>();
+			this.cards = new CardManager();
 		}
 	}
 
@@ -39,20 +40,18 @@ public class PlayerModel {
 	public void placeArmy() {
 		numberOfUnplacedArmies--;
 	}
-	
+
 	public void addCard(Card newCard) {
 		cards.add(newCard);
 	}
-	
-	public int getCardCount() {
-		return cards.size();
-	}
-	
-	public Card getCardAtIndex(int index) {
-		return cards.get(index);
-	}
-	
+
+	public int getCardCount() { return cards.getCardCount(); }
+
+	public CardManager getCards() { return cards; }
+
 	public void removeCard(Card cardToRemove) {
 		this.cards.remove(cardToRemove);
 	}
+
+	public void removeCards(ArrayList<Card> cardsToRemove) { this.cards.removeAll(cardsToRemove); }
 }

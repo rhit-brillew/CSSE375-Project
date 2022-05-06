@@ -11,6 +11,7 @@ public class InitializationController implements Runnable, StartingOptionsObserv
 	private TerritoryMapController territories;
 	private Locale locale;
 	private int numberOfPlayers;
+	private int board;
 
 	@Override
 	public void run() {
@@ -39,11 +40,16 @@ public class InitializationController implements Runnable, StartingOptionsObserv
 	}
 
 	@Override
+	public void setBoard(int index){
+		this.board = index;
+	}
+
+	@Override
 	public void startGame() {
 		synchronized (this) {
-			territories = TerritoryMapController.loadTerritoryXMLData();
+			territories = TerritoryMapController.loadTerritoryXMLData(this.board);
 			StaticResourceBundle.createResourceBundle(locale);
-			GameView.create(numberOfPlayers, territories.getNameLocationHashMap());
+			GameView.create(numberOfPlayers, territories.getNameLocationHashMap(), this.board);
 			this.notify();
 		}
 	}
