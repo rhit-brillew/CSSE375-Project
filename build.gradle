@@ -13,6 +13,14 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'risk.engine.MainController'
+        )
+    }
+}
+
 dependencies {
     compile 'junit:junit:4.12', 'org.easymock:easymock:3.4'
 }
