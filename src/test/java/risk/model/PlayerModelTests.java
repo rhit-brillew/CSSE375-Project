@@ -16,10 +16,15 @@ import org.junit.Test;
  */
 
 public class PlayerModelTests {
+
+	private PlayerModel arrangePlayerModel(int armies) {
+		return new PlayerModel(armies, Color.BLACK);
+	}
+
 	@Test
 	public void testConstructor41UnplacedArmies() {
 		try {
-			new PlayerModel(41, Color.BLACK);
+			arrangePlayerModel(41);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Player must be created with less than 40 unplaced armies", e.getMessage());
@@ -29,7 +34,7 @@ public class PlayerModelTests {
 	@Test
 	public void testConstructorNegative1UnplacedArmies() {
 		try {
-			new PlayerModel(-1, Color.BLACK);
+			arrangePlayerModel(-1);
 			fail();
 		} catch (Exception e) {
 			assertEquals("Player must be created with a positive number of armies", e.getMessage());
@@ -38,13 +43,13 @@ public class PlayerModelTests {
 
 	@Test
 	public void testConstructor0UnplacedArmies() {
-		PlayerModel playerModel = new PlayerModel(0, Color.BLACK);
+		PlayerModel playerModel = arrangePlayerModel(0);
 		assertEquals(0, playerModel.getNumberOfUnplacedArmies());
 	}
 
 	@Test
 	public void testConstructor40UnplacedArmies() {
-		PlayerModel playerModel = new PlayerModel(40, Color.BLACK);
+		PlayerModel playerModel = arrangePlayerModel(40);
 		assertEquals(40, playerModel.getNumberOfUnplacedArmies());
 	}
 }

@@ -7,6 +7,7 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
@@ -38,17 +39,24 @@ public class GameView extends GameViewObservable {
 	private JSlider troopCount;
 	private BufferedImage territoryImage;
 	private int territorySize = 30;
+	private int board;
 	private HashMap<String, JLabel> territoryCircles;
 	private HashMap<String, JLabel> territoryArmyCounts;
+	private ArrayList<JLabel> diceRollsResults;
+
+	//TODO:
+	private JLabel globalGameStateLabel;
 
 	private ResourceBundle messages;
 	
-	private GameView(int numberOfPlayers, HashMap<String, Point> territories) {
+	private GameView(int numberOfPlayers, HashMap<String, Point> territories, int board) {
 		this.numberOfPlayers = numberOfPlayers;
 		this.messages = StaticResourceBundle.getResourceBundle();
 		territoryCircles = new HashMap<>();
 		territoryArmyCounts = new HashMap<>();
-		
+		this.board = board;
+		diceRollsResults = new ArrayList<>();
+
 		initializeFrame();
 		initializeMapPane();
 		initializeGameBarPanel();
@@ -61,11 +69,14 @@ public class GameView extends GameViewObservable {
 		addMap();
 		addPlayerIcons();
 		addTerritories(territories);
+
+		initializeGlobalGameStateLabel();
+
 		frame.setVisible(true);
 	}
 
-	public static void create(int numberOfPlayers, HashMap<String, Point> territories) {
-		gameView = new GameView(numberOfPlayers, territories);
+	public static void create(int numberOfPlayers, HashMap<String, Point> territories, int board) {
+		gameView = new GameView(numberOfPlayers, territories, board);
 	}
 
 	public static GameView getGameView() {
@@ -76,10 +87,6 @@ public class GameView extends GameViewObservable {
 		return numberOfPlayers;
 	}
 
-	public ResourceBundle getResourceBundle() {
-		return messages;
-	}
-	
 	private void initializeFrame() {
 		frame = new JFrame();
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -111,16 +118,27 @@ public class GameView extends GameViewObservable {
 		gameBarPanel.add(errorLabel);
 		gameBarPanel.add(gameState);
 	}
-	
+
+	private void initializeGlobalGameStateLabel(){
+		ImageIcon image = scaleImage(FRAME_WIDTH, 70, "src/main/resources/images/bottomGameBar.png");
+		JLabel label = new JLabel("", image, SwingConstants.CENTER);
+		label.setLayout(null);
+		label.setBounds(0, FRAME_HEIGHT-200, FRAME_WIDTH, 70);
+		mapPane.add(label, JLayeredPane.PALETTE_LAYER, 2);
+		label.setVisible(true);
+
+		globalGameStateLabel = new JLabel(messages.getString("setupLabel"));
+		globalGameStateLabel.setLayout(null);
+		globalGameStateLabel.setBounds(FRAME_WIDTH/2 - (int)globalGameStateLabel.getPreferredSize().getWidth()/2, FRAME_HEIGHT-230, FRAME_WIDTH/2, 100);
+		globalGameStateLabel.setFont(new Font(gameState.getFont().getName(), Font.PLAIN, 18));
+		globalGameStateLabel.setForeground(Color.WHITE);
+		mapPane.add(globalGameStateLabel, JLayeredPane.PALETTE_LAYER, 1);
+		globalGameStateLabel.setVisible(true);
+	}
+
 	private void initializeAttackCount() {
-		attackCount = new JSlider(1, 3);
-		attackCount.setBounds(1500, 50, 300, 50);
-		attackCount.setMajorTickSpacing(1);
-		attackCount.setPaintTicks(true);
-		attackCount.setBackground(Color.black);
-		attackCount.setForeground(Color.white);
-		attackCount.setPaintLabels(true);
-		
+		attackCount = initializeSliderCount();
+
 		submit = new JButton(messages.getString("attackLabel"));
 		submit.setBounds(1700, 0, 100, 50);
 		submit.setLayout(null);
@@ -132,36 +150,63 @@ public class GameView extends GameViewObservable {
 	}
 	
 	private void initializeTroopCount() {
-		troopCount = new JSlider(1, 3);
-		troopCount.setBounds(1500, 50, 300, 50);
-		troopCount.setMajorTickSpacing(1);
-		troopCount.setPaintTicks(true);
-		troopCount.setBackground(Color.black);
-		troopCount.setForeground(Color.white);
-		troopCount.setPaintLabels(true);
-		
+		troopCount = initializeSliderCount();
+
 		gameBarPanel.add(troopCount);
 		troopCount.setVisible(false);
+	}
+
+	private JSlider initializeSliderCount(){
+		JSlider slider = new JSlider(1, 3);
+		slider.setBounds(1500, 50, 300, 50);
+		slider.setMajorTickSpacing(1);
+		slider.setPaintTicks(true);
+		slider.setBackground(Color.black);
+		slider.setForeground(Color.white);
+		slider.setPaintLabels(true);
+		return slider;
 	}
 	
 	private void initializeDiceLabel() {
 		ImageIcon image = scaleImage(100, 100, "src/main/resources/images/dice.png");
 		diceLabel = new JLabel("", image, SwingConstants.RIGHT);
 		diceLabel.setLayout(null);
-		diceLabel.setBounds(1400, 0, 200, GAME_BAR_PANEL_HEIGHT);
+		diceLabel.setBounds(1400, 0, 100, GAME_BAR_PANEL_HEIGHT);
 		diceLabel.setForeground(Color.white);
-		
+
+		addRollResultsToDisplay(image);
+		addDiceMouseListener();
+		gameBarPanel.add(diceLabel);
+	}
+
+	private void addRollResultsToDisplay(ImageIcon image) {
+		for(int i = 0; i < 3; i++){
+			JLabel rollResult = new JLabel("", image, SwingConstants.RIGHT);
+			rollResult.setLayout(null);
+			rollResult.setBounds(1500 + i * 100, 0, 100, GAME_BAR_PANEL_HEIGHT);
+			rollResult.setForeground(Color.white);
+			rollResult.setVisible(false);
+			diceRollsResults.add(rollResult);
+			gameBarPanel.add(rollResult);
+		}
+	}
+
+	private void addDiceMouseListener() {
 		diceLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				for(GameViewObserver observer : observers) {
-					int result = observer.playerRolls();
-					diceLabel.setText(messages.getString("startOfDiceLabel") + result);
+					ArrayList<Integer> result = observer.playerRolls();
+					for(JLabel rollResult : diceRollsResults) {
+						rollResult.setVisible(false);
+					}
+					for(int i = 0; i < result.size(); i++){
+						diceRollsResults.get(i).setIcon(scaleImage(100, 100, "src/main/resources/images/diceside" + result.get(i) + ".png"));
+						diceRollsResults.get(i).setVisible(true);
+					}
 				}
 			}
 		});
-		
-		gameBarPanel.add(diceLabel);
 	}
 	
 	private void initializeCardLabel() {
@@ -209,8 +254,8 @@ public class GameView extends GameViewObservable {
 	}
 	
 	private void addMap() {
-		ImageIcon image = scaleImage(FRAME_WIDTH, FRAME_HEIGHT - GAME_BAR_PANEL_HEIGHT, 
-					messages.getString("gameBoardLocation"));
+		ImageIcon image = scaleImage(FRAME_WIDTH, FRAME_HEIGHT - GAME_BAR_PANEL_HEIGHT,
+				"src/main/resources/board"+ this.board + "/" + messages.getString("gameBoard"));
 		JLabel backgroundLabel = new JLabel(image);
 		
 		backgroundLabel.setLayout(null);
@@ -316,6 +361,9 @@ public class GameView extends GameViewObservable {
 	
 	public void updateCurrentPlayerClaimingLabel(int player) {
 		gameState.setText(MessageFormat.format(messages.getString("playerClaimingLabel"), player));
+		for(JLabel rollResult : diceRollsResults) {
+			rollResult.setVisible(false);
+		}
 		diceLabel.setVisible(false);
 	}
 	
@@ -330,6 +378,9 @@ public class GameView extends GameViewObservable {
 		nextPhaseLabel.setVisible(true);
 		cardLabel.setVisible(false);
 		diceLabel.setVisible(false);
+		for(JLabel rollResult : diceRollsResults) {
+			rollResult.setVisible(false);
+		}
 		gameState.setText(MessageFormat.format(messages.getString("placingDisplayLabel"), player+1, armyCount));
 		errorLabel.setText("");
 	}
@@ -346,6 +397,10 @@ public class GameView extends GameViewObservable {
 	}
 	
 	public void updateCurrentReinforcingDisplay(int player, int availableCount) {
+		diceLabel.setVisible(false);
+		for(JLabel rollResult : diceRollsResults) {
+			rollResult.setVisible(false);
+		}
 		gameState.setText(MessageFormat.format(messages.getString("reinforcingDisplayLabel"), player+1, availableCount));
 		errorLabel.setText("");
 	}
@@ -374,58 +429,39 @@ public class GameView extends GameViewObservable {
 	public void showWinMessage(int currentPlayer){
 		gameState.setText(MessageFormat.format(messages.getString("playerWonMessage"), currentPlayer));
 	}
-	
-	public void showAttackCount(int max) {
-		nextPhaseLabel.setVisible(false);
-		attackCount.setMaximum(max);
-		attackCount.setVisible(true);
-		
-		
-		submit.setVisible(true);
-		
-		MouseListener[] listeners = submit.getMouseListeners();
-		if(listeners.length>0) {
-			submit.removeMouseListener(listeners[0]);
-		}
-		submit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				for(GameViewObserver observer : observers) {
-					observer.determineNumberOfRolls(attackCount.getValue());
-					attackCount.setVisible(false);
-					submit.setVisible(false);
-				}
-			}
-		});
-		gameBarPanel.add(submit);
-	}
-	
-	public void showTroopMovementCount(int maxTroops) {
-		attackCount.setVisible(false);
-		troopCount.setMaximum(maxTroops);
-		troopCount.setVisible(true);
-		
-		submit.setVisible(true);
-		
-		MouseListener[] listeners = submit.getMouseListeners();
-		if(listeners.length>0) {
-			submit.removeMouseListener(listeners[0]);
-		}
-		submit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				for(GameViewObserver observer : observers) {
-					observer.moveTroops(troopCount.getValue());
-					troopCount.setVisible(false);
-					submit.setVisible(false);
-				}
-			}
-		});
-		gameBarPanel.add(submit);
+
+	public void showAttackCount(int max){
+		this.showSliderCount(nextPhaseLabel,attackCount,max);
 	}
 
-	public void closeFrame() {
-		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+	public void showTroopMovementCount(int maxTroops){
+		this.showSliderCount(attackCount,troopCount,maxTroops);
+	}
+
+	public void showSliderCount(Component c, JSlider slider, int max){
+		c.setVisible(false);
+		slider.setMaximum(max);
+		slider.setVisible(true);
+		submit.setVisible(true);
+		MouseListener[] listeners = submit.getMouseListeners();
+		if(listeners.length>0) {
+			submit.removeMouseListener(listeners[0]);
+		}
+		submit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				for(GameViewObserver observer : observers) {
+					if(slider.equals(troopCount)){
+						observer.moveTroops(slider.getValue());
+					}else{
+						observer.determineNumberOfRolls(slider.getValue());
+					}
+					slider.setVisible(false);
+					submit.setVisible(false);
+				}
+			}
+		});
+		gameBarPanel.add(submit);
 	}
 	
 	private ImageIcon scaleImage(int width, int height, String imageLocation) {
@@ -447,5 +483,10 @@ public class GameView extends GameViewObservable {
 	public void updateTerritoryArmyCountDisplay(String territoryName, int armyCount) {
 		JLabel territoryCountLabel = territoryArmyCounts.get(territoryName);
 		territoryCountLabel.setText(""+armyCount);
+	}
+
+	//TODO:
+	public void updateGlobalGameState(int currentPlayer, String state){
+		globalGameStateLabel.setText("Player " + (currentPlayer+1) + " is " + state);
 	}
 }
